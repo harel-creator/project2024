@@ -1,6 +1,6 @@
 #include <iostream>
 
-class HashFunc 
+class HashFunc
 {
     private:
         /* data */
