@@ -31,6 +31,10 @@ class BloomFilter{
         ~BloomFilter(){
             delete this->hashF;
         }
+
+        size_t checkHash(std::string str){
+            return this->hashF->hash(str);
+        }
         /*
         get a string  url, and acrive an hash function on it.    
         */
@@ -43,6 +47,28 @@ class BloomFilter{
                 this->filter.at(index) = true;
             }
             return index;
+        }
+        
+        void dealWithLine(std::string line){
+            std::vector<std::string> str_vector = split(line);
+            // add a url
+            if (str_vector.at(0) == "1")
+            {
+                useHash(str_vector.back());
+            }else if (str_vector.at(0) == "2"){
+                bool flag = this->filter.at(checkHash(str_vector.back()));
+                if (true == flag)
+                {
+                    //need to add here the check if true positive or false positive
+                    // aka "true true" or "true false"
+                    std::cout<<"true"<<std::endl;
+                    
+                }else{
+                    std::cout<<"false"<<std::endl;
+                }
+            }
+            
+            
         }
 
       

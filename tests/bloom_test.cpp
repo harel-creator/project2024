@@ -71,6 +71,28 @@ TEST(FilterTest, AddURLTest){
             EXPECT_EQ(b1.getFilterIndex(i), true);
         }
     }
-
 }
 
+TEST(FilterTest, checkOnly){
+    testing::internal::CaptureStdout();
+    BloomFilter b1;
+    b1.dealWithLine("2 com");
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "false\n");
+}
+/*
+TEST(FilterTest, AddandCheckURLTest){
+    BloomFilter b1;
+    b1.dealWithLine("2 com");
+    b1.dealWithLine("2 www.example.com0");
+    b1.dealWithLine("1 www.example.com0");
+    b1.dealWithLine("2 www.example.com0");
+    //and check everything
+    for(int i = 0;i<8; i++){
+        if( i != 3 && i!=6){
+            EXPECT_EQ(b1.getFilterIndex(i), false);
+        }else{
+            EXPECT_EQ(b1.getFilterIndex(i), true);
+        }
+    }
+}*/
