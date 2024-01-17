@@ -1,5 +1,4 @@
 #include <iostream>
-//#include <sstream>
 #include "OneHashFunc.cpp"
 class BloomFilter{
     private:
@@ -13,19 +12,19 @@ class BloomFilter{
         }
         BloomFilter(std::string str){
             std::vector<std::string> str_vector = split(str);
-            if (str_vector.at(0) == "1")
+            //create the fillter in the right size
+            this->filter = {};
+            this->filter.assign(std::stoi(str_vector.at(1)), false);
+            
+            //create the right hash function
+            if (str_vector.at(1) == "1")
             {
-                std::cout<< str_vector.at(0)<<std::endl;
                 this->hashF = new OneHashFunc();
             }else{
                 //need to put here another type of HashFunc
             }
-            this->filter = {};
-            this->filter.assign(8, false);
-            for(int i=0;i<str_vector.size();i++){
-                std::cout<< str_vector.at(i)<<std::endl;
-            }
-            useHash(str_vector.back());
+            
+            //useHash(str_vector.back());
             
         }
         ~BloomFilter(){
@@ -75,7 +74,7 @@ class BloomFilter{
         /*
         split the str by "" to an array. Need to delete the array after use
         */
-        std::vector<std::string> split(std::string str){
+        static std::vector<std::string> split(std::string str){
             std::vector<std::string> splited_str{};
             std::stringstream stream_str(str);
             std::string single_word = "";

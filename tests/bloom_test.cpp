@@ -61,11 +61,12 @@ TEST(FilterTests, BasicFilterTest){
 }
 
 TEST(FilterTest, AddURLTest){
-    BloomFilter b1("1 www.example.com0");
-    b1.useHash("");
+    BloomFilter b1;
+    b1.dealWithLine("1 www.example.com0");
+    //b1.useHash("");
     //and check everything
     for(int i = 0;i<8; i++){
-        if( i != 3 && i!=6){
+        if( i != 3 ){
             EXPECT_EQ(b1.getFilterIndex(i), false);
         }else{
             EXPECT_EQ(b1.getFilterIndex(i), true);
@@ -79,20 +80,25 @@ TEST(FilterTest, checkOnly){
     b1.dealWithLine("2 com");
     std::string output = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output, "false\n");
-}
-/*
-TEST(FilterTest, AddandCheckURLTest){
-    BloomFilter b1;
-    b1.dealWithLine("2 com");
     b1.dealWithLine("2 www.example.com0");
+    EXPECT_EQ(output, "false\n");
     b1.dealWithLine("1 www.example.com0");
+
+}
+TEST(FilterTest, checkAndAddOnly){
+    
+    BloomFilter b1;
+    b1.dealWithLine("1 www.example.com0");
+    testing::internal::CaptureStdout();
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+    testing::internal::CaptureStdout();
     b1.dealWithLine("2 www.example.com0");
-    //and check everything
-    for(int i = 0;i<8; i++){
-        if( i != 3 && i!=6){
-            EXPECT_EQ(b1.getFilterIndex(i), false);
-        }else{
-            EXPECT_EQ(b1.getFilterIndex(i), true);
-        }
-    }
-}*/
+    std::string output2 = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output2, "true\n");
+    
+    testing::internal::CaptureStdout();
+    b1.dealWithLine("2 www.example.com111");
+    std::string output3 = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output3, "false\n");
+}
