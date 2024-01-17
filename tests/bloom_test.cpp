@@ -29,7 +29,6 @@ TEST(SlpitTests, BasicSplitTest){
         EXPECT_EQ(splited_str[i], ans[i]);
     }
 }
-
 TEST(SlpitTests, BasicSplitTest2){
     BloomFilter bf;
     std::string s = "2 1 www.com11";  
@@ -40,4 +39,23 @@ TEST(SlpitTests, BasicSplitTest2){
     for (int i = 0; i < ans.size(); i++){
         EXPECT_EQ(splited_str[i], ans[i]);
     }
+}
+
+TEST(FilterTests, BasicFilterTest){
+    BloomFilter b1,b2;
+    b1.useHash("www.example.com0");
+    EXPECT_EQ(b1.getFilterIndex(3), true);
+    
+    //empty string
+    b1.useHash("");
+    EXPECT_EQ(b1.getFilterIndex(6), true);
+    //and check every cell
+    for(int i = 0;i<8; i++){
+        if( i != 3 && i != 6 ){
+            EXPECT_EQ(b1.getFilterIndex(i), false);
+        }else{
+            EXPECT_EQ(b1.getFilterIndex(i), true);
+        }
+    }
+
 }
