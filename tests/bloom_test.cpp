@@ -42,7 +42,7 @@ TEST(SlpitTests, BasicSplitTest2){
 }
 
 TEST(FilterTests, BasicFilterTest){
-    BloomFilter b1,b2;
+    BloomFilter b1;
     b1.useHash("www.example.com0");
     EXPECT_EQ(b1.getFilterIndex(3), true);
     
@@ -59,3 +59,20 @@ TEST(FilterTests, BasicFilterTest){
     }
 
 }
+
+TEST(Filter__Test, AddURLTest){
+BloomFilter b1;
+    b1.useHash("1 www.example.com0");
+    EXPECT_EQ(b1.getFilterIndex(3), true);
+
+    //and check everything
+    for(int i = 0;i<8; i++){
+        if( i != 3 ){
+            EXPECT_EQ(b1.getFilterIndex(i), false);
+        }else{
+            EXPECT_EQ(b1.getFilterIndex(i), true);
+        }
+    }
+
+}
+
