@@ -11,6 +11,23 @@ class BloomFilter{
             this->filter = {};
             this->filter.assign(8, false);            
         }
+        BloomFilter(std::string str){
+            std::vector<std::string> str_vector = split(str);
+            if (str_vector.at(0) == "1")
+            {
+                std::cout<< str_vector.at(0)<<std::endl;
+                this->hashF = new OneHashFunc();
+            }else{
+                //need to put here another type of HashFunc
+            }
+            this->filter = {};
+            this->filter.assign(8, false);
+            for(int i=0;i<str_vector.size();i++){
+                std::cout<< str_vector.at(i)<<std::endl;
+            }
+            useHash(str_vector.back());
+            
+        }
         ~BloomFilter(){
             delete this->hashF;
         }

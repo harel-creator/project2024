@@ -60,14 +60,12 @@ TEST(FilterTests, BasicFilterTest){
 
 }
 
-TEST(Filter__Test, AddURLTest){
-BloomFilter b1;
-    b1.useHash("1 www.example.com0");
-    EXPECT_EQ(b1.getFilterIndex(3), true);
-
+TEST(FilterTest, AddURLTest){
+    BloomFilter b1("1 www.example.com0");
+    b1.useHash("");
     //and check everything
     for(int i = 0;i<8; i++){
-        if( i != 3 ){
+        if( i != 3 && i!=6){
             EXPECT_EQ(b1.getFilterIndex(i), false);
         }else{
             EXPECT_EQ(b1.getFilterIndex(i), true);
