@@ -11,7 +11,7 @@
 class BloomFilter {
 private:
     HashFunc* hashF;            // Pointer to the hash function object
-    std::vector<bool> filter;    // Bit array representing the filter
+    std::vector<bool> filter;    // Bool array representing the filter
     std::vector<std::string> blackList;  // List of blacklisted URLs
 
 public:
