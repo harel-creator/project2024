@@ -10,6 +10,7 @@ class BloomFilter{
     private:
         HashFunc* hashF;
         std::vector<bool> filter;
+        std::vector<std::string> blackList;
     public:
         BloomFilter();
         BloomFilter(std::string str);
@@ -30,7 +31,7 @@ class BloomFilter{
         //std::vector<std::string> split(std::string str);
         
         bool getFilterIndex(int index)const;
-
+        void urlInBlackList(std::string url)const;
         
     
 };

@@ -4,3 +4,4 @@ Ex1(2).pdf
 calc_test.cpp
 test_main.cpp
 calc.cpp
+*.o

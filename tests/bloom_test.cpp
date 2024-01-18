@@ -1,4 +1,11 @@
 #include <gtest/gtest.h>
+#include "../src/BloomFilter.h"
+#include "../src/HashFunc.h"
+#include "../src/HelpFunctions.h"
+#include "../src/OneHashFunc.h"
+#include "../src/HashFunc.cpp"
+#include "../src/HelpFunctions.cpp"
+#include "../src/OneHashFunc.cpp"
 #include "../src/BloomFilter.cpp" // here we include the code to be tested
 //#include "../src/OneHashFunc.cpp"
 //#include "../src/HashFunc.cpp"
@@ -23,7 +30,7 @@ TEST(SlpitTests, BasicSplitTest){
     std::string s = "2 www.com11";
     std::vector<std::string> ans = {"2", "www.com11"}; 
     std::vector<std::string> splited_str;
-    splited_str = bf.split(s);
+    splited_str = split(s);
     ASSERT_EQ(splited_str.size(),ans.size());
     for (int i = 0; i < ans.size(); i++){
         EXPECT_EQ(splited_str[i], ans[i]);
@@ -34,7 +41,7 @@ TEST(SlpitTests, BasicSplitTest2){
     std::string s = "2 1 www.com11";  
     std::vector<std::string> ans = {"2", "1", "www.com11"}; 
     std::vector<std::string> splited_str;
-    splited_str = bf.split(s);
+    splited_str = split(s);
     ASSERT_EQ(splited_str.size(),ans.size());
     for (int i = 0; i < ans.size(); i++){
         EXPECT_EQ(splited_str[i], ans[i]);
@@ -85,6 +92,7 @@ TEST(FilterTest, checkOnly){
     b1.dealWithLine("1 www.example.com0");
 
 }
+
 TEST(FilterTest, checkAndAddOnly){
     
     BloomFilter b1;
@@ -95,10 +103,50 @@ TEST(FilterTest, checkAndAddOnly){
     testing::internal::CaptureStdout();
     b1.dealWithLine("2 www.example.com0");
     std::string output2 = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output2, "true\n");
+    EXPECT_EQ(output2, "true true\n");
     
     testing::internal::CaptureStdout();
     b1.dealWithLine("2 www.example.com111");
     std::string output3 = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output3, "false\n");
+}
+
+TEST(FilterTest, falsePositveCheck){
+    BloomFilter b1;
+    b1.dealWithLine("1 www.example.com0");
+    testing::internal::CaptureStdout();
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+    testing::internal::CaptureStdout();
+    b1.dealWithLine("2 www.example.com0");
+    std::string output2 = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output2, "true true\n");
+
+}
+TEST(AlmostFinalTEST, finalOne){
+
+    BloomFilter b1;
+    OneHashFunc n;
+
+    testing::internal::CaptureStdout();
+    b1.dealWithLine("1 www.example.com0");
+    std::string output1 = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output1, "");
+
+    testing::internal::CaptureStdout();
+    b1.dealWithLine("2 www.example.com0");
+    std::string output2 = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output2, "true true\n");
+
+    testing::internal::CaptureStdout();
+    b1.dealWithLine("2 www.example.com4");
+    std::string output3 = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output3, "false\n");
+
+    testing::internal::CaptureStdout();
+    b1.dealWithLine("2 www.example.com11");
+    std::string output4 = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output4, "true false\n");
+
+
 }
