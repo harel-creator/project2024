@@ -1,19 +1,21 @@
 #include <iostream>
-#include "OneHashFunc.cpp"
-class BloomFilter{
-    private:
-        HashFunc* hashF;
-        std::vector<bool> filter;
-    public:
-        BloomFilter(){
+//#include "OneHashFunc.cpp"
+#include "BloomFilter.h"
+#include "HelpFunctions.h"
+//class BloomFilter{
+    
+    //public:
+        BloomFilter::BloomFilter(){
             this->hashF = new OneHashFunc();
             this->filter = {};
             this->filter.assign(8, false);            
         }
-        BloomFilter(std::string str){
+        BloomFilter::BloomFilter(std::string str){
+            this->hashF = new OneHashFunc();
             std::vector<std::string> str_vector = split(str);
             //create the fillter in the right size
             this->filter = {};
+            
             this->filter.assign(std::stoi(str_vector.at(1)), false);
             
             //create the right hash function
@@ -24,22 +26,22 @@ class BloomFilter{
                 //need to put here another type of HashFunc
             }
             
-            //useHash(str_vector.back());
-            
+            //useHash(str_vector.back());  
         }
-        ~BloomFilter(){
+        BloomFilter::~BloomFilter(){
             delete this->hashF;
         }
 
-        size_t checkHash(std::string str){
+        size_t BloomFilter::checkHash(std::string str){
             return this->hashF->hash(str);
         }
         /*
         get a string  url, and acrive an hash function on it.    
         */
-        std::size_t useHash(std::string url){
- 
+        std::size_t BloomFilter::useHash(std::string url){
+            //std::cout<<url<<std::endl;
             size_t index = this->hashF->hash(url);
+            //std::cout<<static_cast<int>(index)<<std::endl;
             //In case the value in filter(index) is false we need to
             //shift it ti true
             if(!this->filter.at(index)){
@@ -48,11 +50,12 @@ class BloomFilter{
             return index;
         }
         
-        void dealWithLine(std::string line){
+        void BloomFilter::dealWithLine(std::string line){
             std::vector<std::string> str_vector = split(line);
             // add a url
             if (str_vector.at(0) == "1")
             {
+                
                 useHash(str_vector.back());
             }else if (str_vector.at(0) == "2"){
                 bool flag = this->filter.at(checkHash(str_vector.back()));
@@ -71,27 +74,12 @@ class BloomFilter{
         }
 
       
-        /*
-        split the str by "" to an array. Need to delete the array after use
-        */
-        static std::vector<std::string> split(std::string str){
-            std::vector<std::string> splited_str{};
-            std::stringstream stream_str(str);
-            std::string single_word = "";
-            
-            //every iteration put a full word to 'single_word', then push it to the 
-            //end of the vector
-            while(stream_str >> single_word){
-                splited_str.push_back(single_word);
-            }
-            
-            return splited_str;
-        }
         
-        bool getFilterIndex(int index)const{
+        
+        bool BloomFilter::getFilterIndex(int index)const{
             return this->filter.at(index);
         }
 
         
     
-};
+//};

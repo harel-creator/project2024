@@ -1,16 +1,10 @@
-#include "HashFunc.cpp"
 
-class OneHashFunc: public HashFunc
-{
-private:
-    /* data */
-public:
-    
-    OneHashFunc(): HashFunc(){}
+#include "OneHashFunc.h"
+
+    //OneHashFunc::OneHashFunc(): HashFunc(){}
     /*~OneHashFunc: public HashFunc();*/
 
-    std::size_t hash(std::string url) override{
+    std::size_t OneHashFunc::hash(std::string url) {
         std::hash<std::string> myStringHash;
         return myStringHash(url)%8;
     }
-};
