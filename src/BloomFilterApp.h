@@ -12,16 +12,17 @@
 class BloomFilterApp {
     private:
         BloomFilter* bloomFilter;       //pointer to Bloomfilter object
+    public:
+
+        // Default constructor of the app, shoud be used from main.
+        BloomFilterApp();
 
         /**
          * ensures that the input is proper for building bloomfilter.
          * @param str The input of the user for set up
-         * @return Is the in put unsubtle to init bloomfilter.
+         * @return Is the in put sutble to init bloomfilter.
          */
-        bool setUpInPutCheck(std::string user_input);
-    public:
-        // Default constructor of the app, shoud be used from main.
-        BloomFilterApp();
+        static bool setUpInPutCheck(std::string user_input);
 
         /**
          * bilds the bloomfilter after getting proper user input.

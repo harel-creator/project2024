@@ -7,7 +7,8 @@
 #include "../src/HelpFunctions.cpp"
 #include "../src/OneHashFunc.cpp"
 #include "../src/BloomFilter.cpp"
-
+#include "../src/BloomFilterApp.h"
+#include "../src/BloomFilterApp.cpp"
 // Testing useHash:
 TEST(FilterTest, BasicTest) {
     BloomFilter bl;
@@ -84,6 +85,7 @@ TEST(FilterTests, BasicFilterTest){
     }
 
 }
+
 
 // Testing dealWithLine method of BloomFilter:
 TEST(FilterTest, AddURLTest){
@@ -170,4 +172,7 @@ TEST(AlmostFinalTEST, finalOne){
     b1.dealWithLine("2 www.example.com11");
     std::string output4 = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output4, "true false\n");
+}
+TEST(SetUpTest, notNumberSize){
+    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("a 1"), false);
 }
