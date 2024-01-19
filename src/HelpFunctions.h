@@ -4,8 +4,13 @@
 #include <string>
 #include <sstream>
 
+// A file that includes functions we use in the code and don't currenlty have a better place.
+
 /*
-split the str by "" to an array. Need to delete the array after use
+ * Splits a string into a vector of words (separated by spaces).
+ * @param str The input string to be split.
+ * @return A vector of strings containing the individual words.
 */
 std::vector<std::string> split(std::string str);
+
 #endif

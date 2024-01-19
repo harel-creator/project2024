@@ -12,7 +12,6 @@ class HashFunc
         size_t *size;
 
     public:
-        // 
         /*
          * Constructor that creates a hash function with a specific output range.
          * @param size the size of the outpu range 0, ... , size-1.
