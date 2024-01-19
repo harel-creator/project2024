@@ -47,8 +47,15 @@ std::size_t BloomFilter::useHash(std::string url) {
     if (!this->filter.at(index)) {
         this->filter.at(index) = true;
         this->blackList.push_back(url);
+    } else {
+        for (const std::string str : this->blackList) {
+            if (str == url) {
+                return index;
+            }
+        }
+        // If we are here, it's because we looked and didn't find any match:
+        this->blackList.push_back(url);
     }
-
     return index;
 }
 
