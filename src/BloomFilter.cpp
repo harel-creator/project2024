@@ -17,19 +17,10 @@ BloomFilter::BloomFilter(std::string str) {
 
     // From it we can easily find the size of the filter and create the rest of it:
     this->filterSize = std::stoi(str_vector.at(0));
-    this->hashF = new OneHashFunc(this->filterSize);
+    this->hashF = new OneHashFunc(this->filterSize, std::stoi(str_vector.at(1)));
     this->blackList = {};    
     this->filter = {};
     this->filter.assign(this->filterSize, false);
-
-    // Create the right hash function based on the size
-    // (works for now, but maybe one day we will want more than 2 types of hash functions?)
-    if (str_vector.at(1) == "1") {
-        this->hashF = new OneHashFunc();
-    } else {
-        // Need to put here another type of HashFunc
-    }
-    
 }
 
 BloomFilter::~BloomFilter() {
@@ -70,8 +61,6 @@ void BloomFilter::dealWithLine(std::string line) {
         // Check if the URL is in the blacklist or not
         bool flag = this->filter.at(checkHash(str_vector.back()));
         if (true == flag) {
-            // Need to add here the check if true positive or false positive
-            // aka "true true" or "true false"
             std::cout << "true";
             urlInBlackList(str_vector.back());
         } else {

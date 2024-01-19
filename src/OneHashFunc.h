@@ -7,6 +7,8 @@
 // The class for the url hashing function that hashes once: the 1-hash function. 
 class OneHashFunc: public HashFunc
 {
+    private:
+        size_t hashSize;
     public:
         // Default constructor: creates a 1-hash function with output range 8.
         OneHashFunc();
@@ -15,7 +17,7 @@ class OneHashFunc: public HashFunc
          * A constructor that creates a 1-hash function with a specific output range.
          * @param size The range of the hash function 0, ... , size-1.
         */
-        OneHashFunc(size_t size);
+        OneHashFunc(size_t size, size_t hashSize);
 
         /**
          * Hashes a URL using the std::hash function, into the correct range.

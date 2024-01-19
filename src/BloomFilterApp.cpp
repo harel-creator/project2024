@@ -11,6 +11,13 @@ bool BloomFilterApp::setUpInPutCheck(std::string user_input) {
         try{
             BloomFilter* bl = new BloomFilter(user_input);
             delete bl;
+            std::vector<std::string> str_vector = split(user_input);
+            if (std::stoi(str_vector.at(0)) == 0)
+                return false;
+            for (int i = 1; i < str_vector.size(); ++i) {
+                if (std::stoi(str_vector.at(i)) <= 0)
+                    return false;
+            }
             return true;
         } catch(...) {
             return false;
