@@ -195,3 +195,24 @@ TEST(SetUpTests, negSize){
 TEST(SetUpTests, negHash){
     EXPECT_EQ(BloomFilterApp::setUpInPutCheck("8 -1"), false);
 }
+
+//
+TEST(FilterTests, addtionToListIfSameHash){
+
+    BloomFilter b1;
+
+    testing::internal::CaptureStdout();
+    b1.dealWithLine("1 www.example.com0");
+    std::string output1 = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output1, "");
+
+    testing::internal::CaptureStdout();
+    b1.dealWithLine("1 www.example.com1");
+    std::string output2 = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output2, "");
+
+    testing::internal::CaptureStdout();
+    b1.dealWithLine("2 www.example.com1");
+    std::string output3 = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output3, "true true\n");
+}
