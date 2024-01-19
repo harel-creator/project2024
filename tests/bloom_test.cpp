@@ -189,3 +189,9 @@ TEST(SetUpTests, zeroSize){
 TEST(SetUpTests, zeroHash){
     EXPECT_EQ(BloomFilterApp::setUpInPutCheck("8 0"), false);
 }
+TEST(SetUpTests, negSize){
+    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("-1 1"), false);
+}
+TEST(SetUpTests, negHash){
+    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("8 -1"), false);
+}
