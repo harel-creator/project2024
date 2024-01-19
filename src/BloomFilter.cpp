@@ -3,34 +3,27 @@
 #include "BloomFilter.h"
 #include "HelpFunctions.h"
 
-// Constructor for BloomFilter
 BloomFilter::BloomFilter() {
     this->hashF = new OneHashFunc();
     this->filter = {};
-    this->filter.assign(8, false);
+    this->filter.assign(DEFAULT_FILTER_SIZE, false);
     this->blackList = {};
-    this->filterSize = 8;
+    this->filterSize = DEFAULT_FILTER_SIZE;
 }
 
-/**
- * @constructor for BloomFilter taking a string parameter
- * @param str A string parameter used for configuration
- */
 BloomFilter::BloomFilter(std::string str) {
+    // We first split the input string into words:
     std::vector<std::string> str_vector = split(str);
+
+    // From it we can easily find the size of the filter and create the rest of it:
     this->filterSize = std::stoi(str_vector.at(0));
-
     this->hashF = new OneHashFunc(this->filterSize);
-    this->blackList = {};
-    
-    // Create the filter with the appropriate size
-
+    this->blackList = {};    
     this->filter = {};
     this->filter.assign(this->filterSize, false);
 
-    
-
     // Create the right hash function based on the size
+    // (works for now, but maybe one day we will want more than 2 types of hash functions?)
     if (str_vector.at(1) == "1") {
         this->hashF = new OneHashFunc();
     } else {
@@ -39,27 +32,14 @@ BloomFilter::BloomFilter(std::string str) {
     
 }
 
-
-
-// Destructor for BloomFilter
 BloomFilter::~BloomFilter() {
     delete this->hashF;
 }
 
-/**
- * @Check hash using the BloomFilter's hash function
- * @param str The input string to be hashed
- * @return The hash value
- */
 size_t BloomFilter::checkHash(std::string str) {
     return this->hashF->hash(str);
 }
 
-/**
- * @Use hash function on a URL and update the filter and blacklist
- * @param url The URL to be processed
- * @return The hash index used
- */
 std::size_t BloomFilter::useHash(std::string url) {
     size_t index = this->hashF->hash(url);
 
@@ -72,10 +52,6 @@ std::size_t BloomFilter::useHash(std::string url) {
     return index;
 }
 
-/**
- * @Process a line of input and perform the corresponding operation
- * @param line The input line to be processed
- */
 void BloomFilter::dealWithLine(std::string line) {
     std::vector<std::string> str_vector = split(line);
 
@@ -97,10 +73,6 @@ void BloomFilter::dealWithLine(std::string line) {
     }
 }
 
-/**
- * @Check if a URL is in the blacklist
- * @param url The URL to be checked
- */
 void BloomFilter::urlInBlackList(std::string url) const {
     for (const std::string str : this->blackList) {
         if (str == url) {
@@ -108,18 +80,13 @@ void BloomFilter::urlInBlackList(std::string url) const {
             return;
         }
     }
-    // If we are here, it's because we looked and didn't find any match
+    // If we are here, it's because we looked and didn't find any match:
     std::cout << " false" << std::endl;
 }
 
-/**
- * @Get the value at a specific index in the filter
- * @param index The index to be checked
- * @return The value at the specified index in the filter
- */
 bool BloomFilter::getFilterIndex(int index) const {
     return this->filter.at(index);
 }
-int BloomFilter::getFilterSize(){
+size_t BloomFilter::getFilterSize(){
     return this->filterSize;
 }

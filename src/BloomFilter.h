@@ -4,28 +4,35 @@
 
 #include <vector>
 #include <string>
-//#include <sstream>
-//#include "HashFunc.h"  // Consider adding this include if needed.
+
 #include "OneHashFunc.h"
 
+// A class that contains the logic of the Bloom Filter.
 class BloomFilter {
 private:
-    HashFunc* hashF;            // Pointer to the hash function object
-    std::vector<bool> filter;    // Bit array representing the filter
+    const size_t DEFAULT_FILTER_SIZE = 8;
+
+    HashFunc* hashF;                     // Pointer to the hash function object
+    std::vector<bool> filter;            // Bit array representing the filter
     std::vector<std::string> blackList;  // List of blacklisted URLs
-    int filterSize;
+    size_t filterSize;                   // The size of the filter
+
 public:
-    // Default constructor
+    // Default Constructor for BloomFilter
     BloomFilter();
 
-    // Overloaded constructor with a string parameter
+    /**
+     * @constructor for BloomFilter taking a string parameter
+     * @param str A string parameter used for configuration:
+       (first word- the filter size, the following words- which hashing functions to use)
+     */
     BloomFilter(std::string str);
 
     // Destructor
     ~BloomFilter();
 
     /**
-     * @Use hash function on str, and return the value of hash(str)
+     * Uses the hash functions on str, and return the value of hash(str)
      * @param str The URL to be processed
      * @return The hash value
      */
@@ -38,7 +45,11 @@ public:
      */
     std::size_t useHash(std::string url);
 
-    // Process a line of input and perform the corresponding operation
+    /**
+     * Processes a line of input and performs the corresponding operation
+     * @param line The input line to be processed
+     * @note probably better to put it in a different class later.
+     */
     void dealWithLine(std::string line);
 
     /**
@@ -54,7 +65,10 @@ public:
      */
     bool getFilterIndex(int index) const;
 
-    int getFilterSize();
+    /**
+     * @return the size of the filter (how many bits we keep)
+    */
+    size_t getFilterSize();
 };
 
 #endif

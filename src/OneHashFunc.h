@@ -11,7 +11,10 @@ class OneHashFunc: public HashFunc
         // Default constructor: creates a 1-hash function with output range 8.
         OneHashFunc();
 
-        // A constructor that creates a 1-hash function with the given output range.
+        /**
+         * A constructor that creates a 1-hash function with a specific output range.
+         * @param size The range of the hash function 0, ... , size-1.
+        */
         OneHashFunc(size_t size);
 
         /**
