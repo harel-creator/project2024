@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
     while (flag_user_input) {
         std::getline(std::cin, user_input);
         std::vector<std::string> str_vector = split(user_input);
-        if (str_vector.size() != 3) {
+        if (str_vector.size() < 2) {
             // Handle invalid input
             // You may want to provide feedback to the user or exit the program
         } else {
