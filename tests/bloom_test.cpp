@@ -173,6 +173,19 @@ TEST(AlmostFinalTEST, finalOne){
     std::string output4 = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output4, "true false\n");
 }
-TEST(SetUpTest, notNumberSize){
+//
+TEST(SetUpTests, notNumberSize){
     EXPECT_EQ(BloomFilterApp::setUpInPutCheck("a 1"), false);
+}
+//
+TEST(SetUpTests, notNumberHash){
+    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("8 a"), false);
+}
+//
+TEST(SetUpTests, zeroSize){
+    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("0 1"), false);
+}
+//
+TEST(SetUpTests, zeroHash){
+    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("8 0"), false);
 }
