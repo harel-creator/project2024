@@ -1,6 +1,6 @@
 #pragma once
 #ifndef HASHFUNC
-#define HASHEFUNC
+#define HASHFUNC
 
 #include <iostream>
 
@@ -12,7 +12,7 @@ class HashFunc
         size_t *size;
 
     public:
-        /*
+        /**
          * Constructor that creates a hash function with a specific output range.
          * @param size the size of the outpu range 0, ... , size-1.
          */
@@ -21,7 +21,7 @@ class HashFunc
         // Destructor.
         ~HashFunc();
 
-        /*
+        /**
          * The abstract function that does the hashing.
          * @param url The url to hash.
          * @return the hashed value of the given url.
