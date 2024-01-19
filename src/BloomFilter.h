@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-#include "OneHashFunc.h"
+#include "NumHashFunc.h"
 
 // A class that contains the logic of the Bloom Filter.
 class BloomFilter {

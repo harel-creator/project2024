@@ -1,14 +1,14 @@
-#include "OneHashFunc.h"
+#include "NumHashFunc.h"
 
- OneHashFunc::OneHashFunc() : HashFunc(8) {
+ NumHashFunc::NumHashFunc() : HashFunc(8) {
      this->hashSize = 1;
 }
 
- OneHashFunc::OneHashFunc(size_t size, size_t hashSize) : HashFunc(size){
+ NumHashFunc::NumHashFunc(size_t size, size_t hashSize) : HashFunc(size){
      this->hashSize = hashSize;
 }
 
-size_t OneHashFunc::hash(std::string url) {
+size_t NumHashFunc::hash(std::string url) {
     std::hash<std::string> myStringHash;
     std::hash<size_t> myNumHash;
     size_t outPut = myStringHash(url);

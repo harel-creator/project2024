@@ -2,10 +2,10 @@
 #include "../src/BloomFilter.h"
 #include "../src/HashFunc.h"
 #include "../src/HelpFunctions.h"
-#include "../src/OneHashFunc.h"
+#include "../src/NumHashFunc.h"
 #include "../src/HashFunc.cpp"
 #include "../src/HelpFunctions.cpp"
-#include "../src/OneHashFunc.cpp"
+#include "../src/NumHashFunc.cpp"
 #include "../src/BloomFilter.cpp"
 #include "../src/BloomFilterApp.h"
 #include "../src/BloomFilterApp.cpp"
@@ -22,7 +22,7 @@ TEST(FilterTest, BasicTest) {
 
 // Testing the basic hash function:
 TEST(HashFunc, HashBasicTest){
-    OneHashFunc hf;
+    NumHashFunc hf;
     std::hash<std::string> myStringHash;
     EXPECT_EQ(hf.hash("6"), myStringHash("6")%8);
 }
@@ -151,7 +151,7 @@ TEST(FilterTest, falsePositveCheck){
 TEST(AlmostFinalTEST, finalOne){
 
     BloomFilter b1;
-    OneHashFunc n;
+    NumHashFunc n;
 
     testing::internal::CaptureStdout();
     b1.dealWithLine("1 www.example.com0");

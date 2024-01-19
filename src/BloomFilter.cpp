@@ -4,7 +4,7 @@
 #include "HelpFunctions.h"
 
 BloomFilter::BloomFilter() {
-    this->hashF = new OneHashFunc();
+    this->hashF = new NumHashFunc();
     this->filter = {};
     this->filter.assign(DEFAULT_FILTER_SIZE, false);
     this->blackList = {};
@@ -17,7 +17,7 @@ BloomFilter::BloomFilter(std::string str) {
 
     // From it we can easily find the size of the filter and create the rest of it:
     this->filterSize = std::stoi(str_vector.at(0));
-    this->hashF = new OneHashFunc(this->filterSize, std::stoi(str_vector.at(1)));
+    this->hashF = new NumHashFunc(this->filterSize, std::stoi(str_vector.at(1)));
     this->blackList = {};    
     this->filter = {};
     this->filter.assign(this->filterSize, false);
