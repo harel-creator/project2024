@@ -6,9 +6,12 @@
 
 class HashFunc
 {
+    protected:
+        int size;
+        HashFunc();
     public:
-        /*HashFunc();
-        ~HashFunc();*/
+        /*HashFunc();*/
+        ~HashFunc(){}
 
         virtual std::size_t hash(std::string url)=0;
 

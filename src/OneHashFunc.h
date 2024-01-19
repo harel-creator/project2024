@@ -8,9 +8,11 @@ class OneHashFunc: public HashFunc
     private:
         /* data */
     public:
-    
-        //OneHashFunc(): HashFunc(){};
+        OneHashFunc();
 
+        OneHashFunc(int size);
+        //OneHashFunc(): HashFunc(){};
+        ~OneHashFunc(){}
         std::size_t hash(std::string url) override;
 };
 #endif

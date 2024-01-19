@@ -17,12 +17,13 @@ BloomFilter::BloomFilter() {
  * @param str A string parameter used for configuration
  */
 BloomFilter::BloomFilter(std::string str) {
-    this->hashF = new OneHashFunc();
-    this->blackList = {};
     std::vector<std::string> str_vector = split(str);
-
-    // Create the filter with the appropriate size
     this->filterSize = std::stoi(str_vector.at(0));
+
+    this->hashF = new OneHashFunc(this->filterSize);
+    this->blackList = {};
+    
+    // Create the filter with the appropriate size
 
     this->filter = {};
     this->filter.assign(this->filterSize, false);

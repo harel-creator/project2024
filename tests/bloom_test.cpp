@@ -25,10 +25,14 @@ TEST(HashFunc, HashBasicTest){
 }
 
 //test if the defualt constactor works
-TEST(FilterTeset,EmptyConstarctorTest){
+TEST(FilterTeset,ConstarctorTest){
     BloomFilter bl;
     for (int i =0; i < bl.getFilterSize(); i++){
         EXPECT_EQ(bl.getFilterIndex(i), false);
+    }
+    BloomFilter bl1("128 1");
+    for (int i =0; i < bl1.getFilterSize(); i++){
+        EXPECT_EQ(bl1.getFilterIndex(i), false);
     }
 }
 

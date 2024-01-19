@@ -1,8 +1,14 @@
 #include "OneHashFunc.h"
 
 // Constructor: Uncomment if needed
-// OneHashFunc::OneHashFunc() : HashFunc() {}
+ OneHashFunc::OneHashFunc() : HashFunc() {
+    this->size = 8;
+ }
 
+// Constructor: Uncomment if needed
+ OneHashFunc::OneHashFunc(int size) : HashFunc(){
+    this->size = size;
+ }
 // Destructor: Uncomment if needed
 // OneHashFunc::~OneHashFunc() {}
 
@@ -13,5 +19,5 @@
  */
 std::size_t OneHashFunc::hash(std::string url) {
     std::hash<std::string> myStringHash;
-    return myStringHash(url) % 8;
+    return myStringHash(url) % this->size;
 }
