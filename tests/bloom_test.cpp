@@ -24,6 +24,14 @@ TEST(HashFunc, HashBasicTest){
     EXPECT_EQ(hf.hash("6"), myStringHash("6")%8);
 }
 
+//test if the defualt constactor works
+TEST(FilterTeset,EmptyConstarctorTest){
+    BloomFilter bl;
+    for (int i =0; i < bl.getFilterSize(); i++){
+        EXPECT_EQ(bl.getFilterIndex(i), false);
+    }
+}
+
 // Make sure that the split realy split by "".
 TEST(SlpitTests, BasicSplitTest){
     BloomFilter bf;

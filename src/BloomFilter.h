@@ -11,20 +11,24 @@
 class BloomFilter {
 private:
     HashFunc* hashF;            // Pointer to the hash function object
-    std::vector<bool> filter;    // Bool array representing the filter
+    std::vector<bool> filter;    // Bit array representing the filter
     std::vector<std::string> blackList;  // List of blacklisted URLs
-
+    int filterSize;
 public:
     // Default constructor
     BloomFilter();
 
-    // Overloaded constructor with a string parameter for configuration
+    // Overloaded constructor with a string parameter
     BloomFilter(std::string str);
 
     // Destructor
     ~BloomFilter();
 
-    // Function to check hash using the BloomFilter's hash function
+    /**
+     * @Use hash function on str, and return the value of hash(str)
+     * @param str The URL to be processed
+     * @return The hash value
+     */
     size_t checkHash(std::string str);
 
     /**
@@ -49,6 +53,8 @@ public:
      * @return The value at the specified index in the filter
      */
     bool getFilterIndex(int index) const;
+
+    int getFilterSize();
 };
 
 #endif

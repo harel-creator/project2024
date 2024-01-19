@@ -9,10 +9,11 @@ BloomFilter::BloomFilter() {
     this->filter = {};
     this->filter.assign(8, false);
     this->blackList = {};
+    this->filterSize = 8;
 }
 
 /**
- * @Overloaded constructor for BloomFilter taking a string parameter
+ * @constructor for BloomFilter taking a string parameter
  * @param str A string parameter used for configuration
  */
 BloomFilter::BloomFilter(std::string str) {
@@ -21,8 +22,12 @@ BloomFilter::BloomFilter(std::string str) {
     std::vector<std::string> str_vector = split(str);
 
     // Create the filter with the appropriate size
+    this->filterSize = std::stoi(str_vector.at(0));
+
     this->filter = {};
-    this->filter.assign(std::stoi(str_vector.at(1)), false);
+    this->filter.assign(this->filterSize, false);
+
+    
 
     // Create the right hash function based on the size
     if (str_vector.at(1) == "1") {
@@ -30,7 +35,10 @@ BloomFilter::BloomFilter(std::string str) {
     } else {
         // Need to put here another type of HashFunc
     }
+    
 }
+
+
 
 // Destructor for BloomFilter
 BloomFilter::~BloomFilter() {
@@ -110,4 +118,7 @@ void BloomFilter::urlInBlackList(std::string url) const {
  */
 bool BloomFilter::getFilterIndex(int index) const {
     return this->filter.at(index);
+}
+int BloomFilter::getFilterSize(){
+    return this->filterSize;
 }
