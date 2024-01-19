@@ -3,16 +3,23 @@
 #define ONEHASHFUNC
 
 #include "HashFunc.h"
+
+// The class for the url hashing function that hashes once: the 1-hash function. 
 class OneHashFunc: public HashFunc
 {
-    private:
-        /* data */
     public:
+        // Default constructor: creates a 1-hash function with output range 8.
         OneHashFunc();
 
-        OneHashFunc(int size);
-        //OneHashFunc(): HashFunc(){};
-        ~OneHashFunc(){}
-        std::size_t hash(std::string url) override;
+        // A constructor that creates a 1-hash function with the given output range.
+        OneHashFunc(size_t size);
+
+        /**
+         * Hashes a URL using the std::hash function, into the correct range.
+         * @param url The input URL to be hashed
+         * @return The hash value in the range.
+         */
+        size_t hash(std::string url) override;
 };
+
 #endif
