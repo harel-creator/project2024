@@ -6,71 +6,77 @@
 #include "../src/HashFunc.cpp"
 #include "../src/HelpFunctions.cpp"
 #include "../src/OneHashFunc.cpp"
-#include "../src/BloomFilter.cpp" // here we include the code to be tested
-//#include "../src/OneHashFunc.cpp"
-//#include "../src/HashFunc.cpp"
+#include "../src/BloomFilter.cpp"
+
+// Testing useHash:
 TEST(FilterTest, BasicTest) {
     BloomFilter bl;
 
     EXPECT_EQ(bl.useHash("www.example.com0"), 3);
-    //empty string
 
+    // Test hashing an empty string:
     EXPECT_EQ(bl.useHash(""), 6);
     
 }
+
+// Testing the basic hash function:
 TEST(HashFunc, HashBasicTest){
     OneHashFunc hf;
     std::hash<std::string> myStringHash;
     EXPECT_EQ(hf.hash("6"), myStringHash("6")%8);
 }
 
-//test if the defualt constactor works
+// Testing the constructors of BloomFilter class:
 TEST(FilterTeset,ConstarctorTest){
     BloomFilter bl;
+
+    // Test the default constructor:
     for (int i =0; i < bl.getFilterSize(); i++){
         EXPECT_EQ(bl.getFilterIndex(i), false);
     }
+
+    // Test the constructor that requires an array size:
     BloomFilter bl1("128 1");
     for (int i =0; i < bl1.getFilterSize(); i++){
         EXPECT_EQ(bl1.getFilterIndex(i), false);
     }
 }
 
-// Make sure that the split realy split by "".
+// Testing the split function:
 TEST(SlpitTests, BasicSplitTest){
     BloomFilter bf;
     std::string s = "2 www.com11";
     std::vector<std::string> ans = {"2", "www.com11"}; 
     std::vector<std::string> splited_str;
     splited_str = split(s);
+
     ASSERT_EQ(splited_str.size(),ans.size());
     for (int i = 0; i < ans.size(); i++){
         EXPECT_EQ(splited_str[i], ans[i]);
     }
-}
-TEST(SlpitTests, BasicSplitTest2){
-    BloomFilter bf;
-    std::string s = "2 1 www.com11";  
-    std::vector<std::string> ans = {"2", "1", "www.com11"}; 
-    std::vector<std::string> splited_str;
+
+    s = "2 1 www.com11";  
+    ans = {"2", "1", "www.com11"}; 
     splited_str = split(s);
+
     ASSERT_EQ(splited_str.size(),ans.size());
     for (int i = 0; i < ans.size(); i++){
         EXPECT_EQ(splited_str[i], ans[i]);
     }
 }
 
+// Testing the filtering of BloomFilter:
 TEST(FilterTests, BasicFilterTest){
     BloomFilter b1;
     b1.useHash("www.example.com0");
+
     EXPECT_EQ(b1.getFilterIndex(3), true);
     
     //empty string
     b1.useHash("");
     EXPECT_EQ(b1.getFilterIndex(6), true);
-    //and check every cell
     for(int i = 0;i<8; i++){
-        if( i != 3 && i != 6 ){
+        if( i != 3 && i != 6){
             EXPECT_EQ(b1.getFilterIndex(i), false);
         }else{
             EXPECT_EQ(b1.getFilterIndex(i), true);
@@ -79,11 +85,11 @@ TEST(FilterTests, BasicFilterTest){
 
 }
 
+// Testing dealWithLine method of BloomFilter:
 TEST(FilterTest, AddURLTest){
     BloomFilter b1;
     b1.dealWithLine("1 www.example.com0");
-    //b1.useHash("");
-    //and check everything
+
     for(int i = 0;i<8; i++){
         if( i != 3 ){
             EXPECT_EQ(b1.getFilterIndex(i), false);
@@ -93,18 +99,19 @@ TEST(FilterTest, AddURLTest){
     }
 }
 
+// Testing BloomFilter output:
 TEST(FilterTest, checkOnly){
     testing::internal::CaptureStdout();
     BloomFilter b1;
     b1.dealWithLine("2 com");
     std::string output = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output, "false\n");
+
     b1.dealWithLine("2 www.example.com0");
     EXPECT_EQ(output, "false\n");
-    b1.dealWithLine("1 www.example.com0");
-
 }
 
+// Testing BloomFilter output 2:
 TEST(FilterTest, checkAndAddOnly){
     
     BloomFilter b1;
@@ -112,6 +119,7 @@ TEST(FilterTest, checkAndAddOnly){
     testing::internal::CaptureStdout();
     std::string output = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output, "");
+
     testing::internal::CaptureStdout();
     b1.dealWithLine("2 www.example.com0");
     std::string output2 = testing::internal::GetCapturedStdout();
@@ -123,6 +131,7 @@ TEST(FilterTest, checkAndAddOnly){
     EXPECT_EQ(output3, "false\n");
 }
 
+// Testing false positives:
 TEST(FilterTest, falsePositveCheck){
     BloomFilter b1;
     b1.dealWithLine("1 www.example.com0");
@@ -135,6 +144,8 @@ TEST(FilterTest, falsePositveCheck){
     EXPECT_EQ(output2, "true true\n");
 
 }
+
+//
 TEST(AlmostFinalTEST, finalOne){
 
     BloomFilter b1;
@@ -159,6 +170,4 @@ TEST(AlmostFinalTEST, finalOne){
     b1.dealWithLine("2 www.example.com11");
     std::string output4 = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output4, "true false\n");
-
-
 }

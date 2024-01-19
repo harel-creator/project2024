@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project("MyCalc") # Replace “MyCalc” with your repo name
+project("PROJECT2024") # Replace “MyCalc” with your repo name
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -15,7 +15,10 @@ https://github.com/google/googletest/archive/03597a01ee50ed
 enable_testing()
 
 set(SOURCE_FILES
-src/calc.cpp # this is where the code we want to test
+src/BloomFilter.cpp
+src/HashFunc.cpp
+src/HelpFunctions.cpp
+src/OneHashFunc.cpp
 )
 
 set(TEST_FILES
@@ -23,12 +26,12 @@ tests/test_main.cpp # this is the main for tests
 tests/bloom_test.cpp # this file contain the tests
 )
 
-add_executable(CalcTests ${TEST_FILES})
+add_executable(BloomFilterTests ${TEST_FILES})
 
 # Link Google Test to the test executable
-target_link_libraries(CalcTests PRIVATE gtest gtest_main)
+target_link_libraries(BloomFilterTests PRIVATE gtest gtest_main)
 
 # Include the source directory for tests
-target_include_directories(CalcTests PRIVATE src)
+target_include_directories(BloomFilterTests PRIVATE src)
 include(GoogleTest)
-add_test(NAME CalcTests COMMAND CalcTests)
+add_test(NAME BloomFilterTests COMMAND BloomFilterTests)
