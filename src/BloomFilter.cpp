@@ -134,8 +134,6 @@ void BloomFilter::dealWithLine(std::string line) {
     }
 }
 
-
-
 bool BloomFilter::getFilterIndex(size_t index) const {
     return this->filter.at(index);
 }
