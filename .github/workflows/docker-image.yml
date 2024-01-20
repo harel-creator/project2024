@@ -12,4 +12,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag docker-image:latest
+      run: docker build . --file Dockerfile --tag orijer/project2024:latest
