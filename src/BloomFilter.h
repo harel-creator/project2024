@@ -6,15 +6,21 @@
 #include <string>
 
 #include "NumHashFunc.h"
+#include "IBlacklist.h"
 
 // A class that contains the logic of the Bloom Filter.
 class BloomFilter {
 private:
-    const size_t DEFAULT_FILTER_SIZE = 8;
-    std::vector<HashFunc*> hashF;  // Pointer to list of hash function objects
-    std::vector<bool> filter;            // Bit array representing the filter
-    std::vector<std::string> blackList;  // List of blacklisted URLs
-    size_t filterSize;                   // The size of the filter
+    static const std::string BLACKLIST_URL;
+    static const std::string IS_URL_BLACKLISTED;
+
+    const int DEFAULT_FILTER_SIZE = 8;
+
+    int filterSize;                        // The size of the filter.
+    std::vector<bool> filter;              // The bit array representing the filter.
+    std::vector<HashFunc*> hashFunctions;  // A list of pointers to hash functions.
+    IBlacklist *blackList;                  // The blacklisted URLs
+                          
 
 public:
     // Default Constructor for BloomFilter
@@ -22,7 +28,7 @@ public:
 
     /**
      * @constructor for BloomFilter taking a string parameter
-     * @param str A string parameter used for configuration:
+     * @param str A proper string parameter used for configuration:
        (first word- the filter size, the following words- which hashing functions to use)
      */
     BloomFilter(std::string str);
@@ -31,18 +37,26 @@ public:
     ~BloomFilter();
 
     /**
-     * Uses the hash functions on str, and return the value of hash(str)
+     * Applies the hashing functions of the filter on a given string, and return the results vector
+       (All the indexes that should be 1 if the string is in the filter)
      * @param str The URL to be processed
-     * @return The hash value
+     * @return A vector of the hash values
      */
-    std::vector<size_t> checkHash(std::string str);
+    std::vector<size_t> applyHash(std::string str);
 
     /**
-     * @Use hash function on a URL and update the filter and blacklist
-     * @param url The URL to be processed
-     * @return The hash index used
+     * Checks if the url is possibly blacklisted or definitely isn't blacklisted.
+     * @param url The url to check.
+     * @return true if the given url is possibly blacklisted, and false if it definitely isn't.
      */
-    std::size_t useHash(std::string url);
+    bool isURLSuspicous(std::string url);
+
+    /**
+     * Adds a specific URL to the blacklist, and updates the bit list of the filter.
+     * @param url The url to blacklist
+     * @note This does not check if the given string is already blacklisted.
+     */
+    void addToBlacklist(std::string url);
 
     /**
      * Processes a line of input and performs the corresponding operation
@@ -52,22 +66,16 @@ public:
     void dealWithLine(std::string line);
 
     /**
-     * @Check if a URL is in the blacklist
-     * @param url The URL to be checked
-     */
-    void urlInBlackList(std::string url) const;
-
-    /**
      * @Get the value at a specific index in the filter
      * @param index The index to be checked
      * @return The value at the specified index in the filter
      */
-    bool getFilterIndex(int index) const;
+    bool getFilterIndex(size_t index) const;
 
     /**
      * @return the size of the filter (how many bits we keep)
     */
-    size_t getFilterSize();
+    int getFilterSize();
 };
 
 #endif

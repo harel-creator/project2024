@@ -9,16 +9,9 @@
 #include "../src/BloomFilter.cpp"
 #include "../src/BloomFilterApp.h"
 #include "../src/BloomFilterApp.cpp"
-// Testing useHash:
-TEST(FilterTest, BasicTest) {
-    BloomFilter bl;
+#include "../src/VectorBlacklist.h"
+#include "../src/VectorBlacklist.cpp"
 
-    EXPECT_EQ(bl.useHash("www.example.com0"), 3);
-
-    // Test hashing an empty string:
-    EXPECT_EQ(bl.useHash(""), 6);
-    
-}
 
 // Testing the basic hash function:
 TEST(HashFunc, HashBasicTest){
@@ -65,27 +58,6 @@ TEST(SlpitTests, BasicSplitTest){
         EXPECT_EQ(splited_str[i], ans[i]);
     }
 }
-
-// Testing the filtering of BloomFilter:
-TEST(FilterTests, BasicFilterTest){
-    BloomFilter b1;
-    b1.useHash("www.example.com0");
-
-    EXPECT_EQ(b1.getFilterIndex(3), true);
-    
-    //empty string
-    b1.useHash("");
-    EXPECT_EQ(b1.getFilterIndex(6), true);
-    for(int i = 0;i<8; i++){
-        if( i != 3 && i != 6){
-            EXPECT_EQ(b1.getFilterIndex(i), false);
-        }else{
-            EXPECT_EQ(b1.getFilterIndex(i), true);
-        }
-    }
-
-}
-
 
 // Testing dealWithLine method of BloomFilter:
 TEST(FilterTest, AddURLTest){
@@ -173,28 +145,6 @@ TEST(AlmostFinalTEST, finalOne){
     std::string output4 = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output4, "true false\n");
 }
-//
-TEST(SetUpTests, notNumberSize){
-    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("a 1"), false);
-}
-//
-TEST(SetUpTests, notNumberHash){
-    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("8 a"), false);
-}
-//
-TEST(SetUpTests, zeroSize){
-    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("0 1"), false);
-}
-//
-TEST(SetUpTests, zeroHash){
-    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("8 0"), false);
-}
-TEST(SetUpTests, negSize){
-    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("-1 1"), false);
-}
-TEST(SetUpTests, negHash){
-    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("8 -1"), false);
-}
 
 //
 TEST(FilterTests, addtionToListIfSameHash){
@@ -216,3 +166,154 @@ TEST(FilterTests, addtionToListIfSameHash){
     std::string output3 = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output3, "true true\n");
 }
+
+//Example 1 from the exercise:
+TEST(ExampleTests, ExampleTest1) {
+    BloomFilter bl("8 1 2");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("2 www.example.com0");
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "false\n");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("x");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("1 www.example.com0");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("2 www.example.com0");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "true true\n");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("2 www.example.com1");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "false\n");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("2 www.example.com11");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "true false\n");
+}
+
+//Example 2 from the exercise:
+TEST(ExampleTests, ExampleTest2) {
+    BloomFilter bl("8 1");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("1 www.example.com0");
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("2 www.example.com0");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "true true\n");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("2 www.example.com1");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "true false\n");
+}
+
+//Testing VectorBlacklist.h:
+TEST(BlacklistsTest, BlacklistsTest1) {
+    VectorBlacklist bl;
+
+    bool res = bl.isURLBlacklisted("www.a.com");
+    EXPECT_EQ(res, false);
+
+    res = bl.isURLBlacklisted("");
+    EXPECT_EQ(res, false);
+
+    bl.blacklistURL("ww.a.com");
+    res = bl.isURLBlacklisted("www.a.com");
+    EXPECT_EQ(res, false);
+
+    res = bl.isURLBlacklisted("");
+    EXPECT_EQ(res, false);
+
+    res = bl.isURLBlacklisted("www.b.com");
+    EXPECT_EQ(res, false);
+}
+
+//Testing dealithline edge cases:
+TEST(EdgeCases, dealWithLineEdgeCases) {
+    BloomFilter bl;
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("1");
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("2");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("a");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("0");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("0 w");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("-1 2");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("1 1 1");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+}
+
+//Testing isSetupInputProper:
+TEST(BloomFilterAppTests, isSetupInputProperTest) {
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 1"), true);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("80 2"), true);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("800 1 2"), true);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("800 2 1"), true);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 1 1"), true); // = 8 1
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 1 2 1"), true); // = 8 1 2
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 1 2 1 2 2 1 1 2"), true); // = 8 1 2
+
+    // Edge cases:
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("a 1"), false);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 a"), false);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("0 1"), false);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 0"), false);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("-1 1"), false);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 -1"), false);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 3"), false);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 1 5"), false);
+}
+
