@@ -9,16 +9,9 @@
 #include "../src/BloomFilter.cpp"
 #include "../src/BloomFilterApp.h"
 #include "../src/BloomFilterApp.cpp"
-// Testing useHash:
-TEST(FilterTest, BasicTest) {
-    BloomFilter bl;
+#include "../src/VectorBlacklist.h"
+#include "../src/VectorBlacklist.cpp"
 
-    EXPECT_EQ(bl.useHash("www.example.com0"), 3);
-
-    // Test hashing an empty string:
-    EXPECT_EQ(bl.useHash(""), 6);
-    
-}
 
 // Testing the basic hash function:
 TEST(HashFunc, HashBasicTest){
@@ -65,27 +58,6 @@ TEST(SlpitTests, BasicSplitTest){
         EXPECT_EQ(splited_str[i], ans[i]);
     }
 }
-
-// Testing the filtering of BloomFilter:
-TEST(FilterTests, BasicFilterTest){
-    BloomFilter b1;
-    b1.useHash("www.example.com0");
-
-    EXPECT_EQ(b1.getFilterIndex(3), true);
-    
-    //empty string
-    b1.useHash("");
-    EXPECT_EQ(b1.getFilterIndex(6), true);
-    for(int i = 0;i<8; i++){
-        if( i != 3 && i != 6){
-            EXPECT_EQ(b1.getFilterIndex(i), false);
-        }else{
-            EXPECT_EQ(b1.getFilterIndex(i), true);
-        }
-    }
-
-}
-
 
 // Testing dealWithLine method of BloomFilter:
 TEST(FilterTest, AddURLTest){

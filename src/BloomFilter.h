@@ -6,19 +6,20 @@
 #include <string>
 
 #include "NumHashFunc.h"
+#include "IBlacklist.h"
 
 // A class that contains the logic of the Bloom Filter.
 class BloomFilter {
 private:
     static const std::string BLACKLIST_URL;
     static const std::string IS_URL_BLACKLISTED;
-    
+
     const int DEFAULT_FILTER_SIZE = 8;
 
     int filterSize;                        // The size of the filter.
     std::vector<bool> filter;              // The bit array representing the filter.
     std::vector<HashFunc*> hashFunctions;  // A list of pointers to hash functions.
-    std::vector<std::string> blackList;    // The blacklisted URLs
+    IBlacklist *blackList;                  // The blacklisted URLs
                           
 
 public:
@@ -51,25 +52,11 @@ public:
     bool isURLSuspicous(std::string url);
 
     /**
-     * Checks if a URL is in the blacklist.
-     * @param url The URL to be checked.
-     * @return true IFF the given url is blacklisted.
-     */
-    bool isURLInBlacklist(std::string url) const;
-
-    /**
      * Adds a specific URL to the blacklist, and updates the bit list of the filter.
      * @param url The url to blacklist
      * @note This does not check if the given string is already blacklisted.
      */
     void addToBlacklist(std::string url);
-
-    /**
-     * @Use hash function on a URL and update the filter and blacklist
-     * @param url The URL to be processed
-     * @return The hash index used
-     */
-    std::size_t useHash(std::string url);
 
     /**
      * Processes a line of input and performs the corresponding operation

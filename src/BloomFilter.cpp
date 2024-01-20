@@ -2,6 +2,7 @@
 
 #include "BloomFilter.h"
 #include "HelpFunctions.h"
+#include "VectorBlacklist.h"
 
 const std::string BloomFilter::BLACKLIST_URL = "1";
 const std::string BloomFilter::IS_URL_BLACKLISTED = "2";
@@ -15,9 +16,7 @@ BloomFilter::BloomFilter() {
     this->hashFunctions = {};
     this->hashFunctions.push_back(new NumHashFunc());
 
-    this->blackList = {};
-
-    
+    this->blackList = new VectorBlacklist;
 }
 
 BloomFilter::BloomFilter(std::string str) {
@@ -35,9 +34,8 @@ BloomFilter::BloomFilter(std::string str) {
         this->hashFunctions.push_back(new NumHashFunc(this->filterSize, std::stoi(strVector.at(i))));
     }
 
-    this->blackList = {};
-
-
+    // We can always change it to another type of blacklist if we need:
+    this->blackList = new VectorBlacklist;
 }
 
 BloomFilter::~BloomFilter() {
@@ -45,7 +43,10 @@ BloomFilter::~BloomFilter() {
         if (hashFunction != nullptr)
             delete hashFunction;
     }
-    }
+
+    if (this->blackList != nullptr)
+        delete this->blackList;
+}
 
 std::vector<size_t> BloomFilter::applyHash(std::string str) {
     std::vector<size_t> hashIds = {};
@@ -62,7 +63,7 @@ void BloomFilter::addToBlacklist(std::string url) {
     for (size_t index : bitIndexes) 
         this->filter.at(index) = 1;
 
-    this->blackList.push_back(url);
+    this->blackList->blacklistURL(url);
 }
 
 bool BloomFilter::isURLSuspicous(std::string url) {
@@ -76,36 +77,6 @@ bool BloomFilter::isURLSuspicous(std::string url) {
 
     // If all bits are on, the url is possibly blacklisted:
     return true;
-}
-
-bool BloomFilter::isURLInBlacklist(std::string url) const {
-    for (const std::string str : this->blackList) {
-        if (str == url) {
-            return true;
-        }
-    }
-    
-    // If we are here, it's because we looked and didn't find any match:
-    return false;
-}
-
-size_t BloomFilter::useHash(std::string url) {
-    std::size_t index = this->hashFunctions.at(0)->hash(url);
-    // If the value in filter(index) is false, change it to true
-    for (const std::string str : this->blackList) {
-        if (str == url) {
-            return index ;
-        }
-    }
-    // If we are here, it's because we looked and didn't find any match:
-    this->blackList.push_back(url);
-    for (HashFunc* hashFunction : this->hashFunctions) {
-        size_t index = hashFunction->hash(url);
-        if (!this->filter.at(index)) {
-            this->filter.at(index) = true;
-        }
-    }
-    return index;
 }
 
 void BloomFilter::dealWithLine(std::string line) {
@@ -130,7 +101,7 @@ void BloomFilter::dealWithLine(std::string line) {
         }
 
         std::cout << "true ";
-        std::cout << std::boolalpha << isURLInBlacklist(url) << std::noboolalpha << std::endl;
+        std::cout << std::boolalpha << this->blackList->isURLBlacklisted(url) << std::noboolalpha << std::endl;
     }
 }
 
