@@ -188,3 +188,121 @@ TEST(FilterTests, addtionToListIfSameHash){
     std::string output3 = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output3, "true true\n");
 }
+
+//Example 1 from the exercise:
+TEST(ExampleTests, ExampleTest1) {
+    BloomFilter bl("8 1 2");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("2 www.example.com0");
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "false\n");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("x");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("1 www.example.com0");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("2 www.example.com0");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "true true\n");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("2 www.example.com1");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "false\n");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("2 www.example.com11");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "true false\n");
+}
+
+//Example 2 from the exercise:
+TEST(ExampleTests, ExampleTest2) {
+    BloomFilter bl("8 1");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("1 www.example.com0");
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("2 www.example.com0");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "true true\n");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("2 www.example.com1");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "true false\n");
+}
+
+//Testing VectorBlacklist.h:
+TEST(BlacklistsTest, BlacklistsTest1) {
+    VectorBlacklist bl;
+
+    bool res = bl.isURLBlacklisted("www.a.com");
+    EXPECT_EQ(res, false);
+
+    res = bl.isURLBlacklisted("");
+    EXPECT_EQ(res, false);
+
+    bl.blacklistURL("ww.a.com");
+    res = bl.isURLBlacklisted("www.a.com");
+    EXPECT_EQ(res, false);
+
+    res = bl.isURLBlacklisted("");
+    EXPECT_EQ(res, false);
+
+    res = bl.isURLBlacklisted("www.b.com");
+    EXPECT_EQ(res, false);
+}
+
+//Testing dealithline edge cases:
+TEST(EdgeCases, dealWithLineEdgeCases) {
+    BloomFilter bl;
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("1");
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("2");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("a");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("0");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("0 w");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("-1 2");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    testing::internal::CaptureStdout();
+    bl.dealWithLine("1 1 1");
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "");
+
+    
+}
