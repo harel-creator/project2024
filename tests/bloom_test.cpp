@@ -2,12 +2,13 @@
 #include "../src/BloomFilter.h"
 #include "../src/HashFunc.h"
 #include "../src/HelpFunctions.h"
-#include "../src/OneHashFunc.h"
+#include "../src/NumHashFunc.h"
 #include "../src/HashFunc.cpp"
 #include "../src/HelpFunctions.cpp"
-#include "../src/OneHashFunc.cpp"
+#include "../src/NumHashFunc.cpp"
 #include "../src/BloomFilter.cpp"
-
+#include "../src/BloomFilterApp.h"
+#include "../src/BloomFilterApp.cpp"
 // Testing useHash:
 TEST(FilterTest, BasicTest) {
     BloomFilter bl;
@@ -21,7 +22,7 @@ TEST(FilterTest, BasicTest) {
 
 // Testing the basic hash function:
 TEST(HashFunc, HashBasicTest){
-    OneHashFunc hf;
+    NumHashFunc hf;
     std::hash<std::string> myStringHash;
     EXPECT_EQ(hf.hash("6"), myStringHash("6")%8);
 }
@@ -84,6 +85,7 @@ TEST(FilterTests, BasicFilterTest){
     }
 
 }
+
 
 // Testing dealWithLine method of BloomFilter:
 TEST(FilterTest, AddURLTest){
@@ -149,7 +151,7 @@ TEST(FilterTest, falsePositveCheck){
 TEST(AlmostFinalTEST, finalOne){
 
     BloomFilter b1;
-    OneHashFunc n;
+    NumHashFunc n;
 
     testing::internal::CaptureStdout();
     b1.dealWithLine("1 www.example.com0");
@@ -170,4 +172,47 @@ TEST(AlmostFinalTEST, finalOne){
     b1.dealWithLine("2 www.example.com11");
     std::string output4 = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output4, "true false\n");
+}
+//
+TEST(SetUpTests, notNumberSize){
+    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("a 1"), false);
+}
+//
+TEST(SetUpTests, notNumberHash){
+    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("8 a"), false);
+}
+//
+TEST(SetUpTests, zeroSize){
+    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("0 1"), false);
+}
+//
+TEST(SetUpTests, zeroHash){
+    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("8 0"), false);
+}
+TEST(SetUpTests, negSize){
+    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("-1 1"), false);
+}
+TEST(SetUpTests, negHash){
+    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("8 -1"), false);
+}
+
+//
+TEST(FilterTests, addtionToListIfSameHash){
+
+    BloomFilter b1;
+
+    testing::internal::CaptureStdout();
+    b1.dealWithLine("1 www.example.com0");
+    std::string output1 = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output1, "");
+
+    testing::internal::CaptureStdout();
+    b1.dealWithLine("1 www.example.com1");
+    std::string output2 = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output2, "");
+
+    testing::internal::CaptureStdout();
+    b1.dealWithLine("2 www.example.com1");
+    std::string output3 = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output3, "true true\n");
 }

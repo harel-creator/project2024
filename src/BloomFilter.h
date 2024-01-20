@@ -5,14 +5,13 @@
 #include <vector>
 #include <string>
 
-#include "OneHashFunc.h"
+#include "NumHashFunc.h"
 
 // A class that contains the logic of the Bloom Filter.
 class BloomFilter {
 private:
     const size_t DEFAULT_FILTER_SIZE = 8;
-
-    HashFunc* hashF;                     // Pointer to the hash function object
+    std::vector<HashFunc*> hashF;  // Pointer to list of hash function objects
     std::vector<bool> filter;            // Bit array representing the filter
     std::vector<std::string> blackList;  // List of blacklisted URLs
     size_t filterSize;                   // The size of the filter
@@ -36,7 +35,7 @@ public:
      * @param str The URL to be processed
      * @return The hash value
      */
-    size_t checkHash(std::string str);
+    std::vector<size_t> checkHash(std::string str);
 
     /**
      * @Use hash function on a URL and update the filter and blacklist

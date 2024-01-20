@@ -4,7 +4,8 @@
 #include "HelpFunctions.h"
 
 BloomFilter::BloomFilter() {
-    this->hashF = new OneHashFunc();
+    this->hashF = {};
+    this->hashF.push_back(new NumHashFunc());
     this->filter = {};
     this->filter.assign(DEFAULT_FILTER_SIZE, false);
     this->blackList = {};
@@ -17,38 +18,45 @@ BloomFilter::BloomFilter(std::string str) {
 
     // From it we can easily find the size of the filter and create the rest of it:
     this->filterSize = std::stoi(str_vector.at(0));
-    this->hashF = new OneHashFunc(this->filterSize);
+    this->hashF = {};
+    for (int i = 1; i < str_vector.size(); ++i) {
+        this->hashF.push_back(new NumHashFunc(this->filterSize, std::stoi(str_vector.at(i))));
+    }
     this->blackList = {};    
     this->filter = {};
     this->filter.assign(this->filterSize, false);
-
-    // Create the right hash function based on the size
-    // (works for now, but maybe one day we will want more than 2 types of hash functions?)
-    if (str_vector.at(1) == "1") {
-        this->hashF = new OneHashFunc();
-    } else {
-        // Need to put here another type of HashFunc
-    }
-    
 }
 
 BloomFilter::~BloomFilter() {
-    delete this->hashF;
-}
+    for (HashFunc* hashItem : this->hashF) {
+        delete hashItem;
+        }
+    }
 
-size_t BloomFilter::checkHash(std::string str) {
-    return this->hashF->hash(str);
+std::vector<size_t> BloomFilter::checkHash(std::string str) {
+    std::vector<size_t> hashIds = {};
+    for (HashFunc* hashItem : this->hashF) {
+        hashIds.push_back(hashItem->hash(str));
+    }
+    return hashIds;
 }
 
 std::size_t BloomFilter::useHash(std::string url) {
-    size_t index = this->hashF->hash(url);
-
+    std::size_t index = this->hashF.at(0)->hash(url);
     // If the value in filter(index) is false, change it to true
-    if (!this->filter.at(index)) {
-        this->filter.at(index) = true;
-        this->blackList.push_back(url);
+    for (const std::string str : this->blackList) {
+        if (str == url) {
+            return index ;
+        }
     }
-
+    // If we are here, it's because we looked and didn't find any match:
+    this->blackList.push_back(url);
+    for (HashFunc* hashItem : this->hashF) {
+        size_t index = hashItem->hash(url);
+        if (!this->filter.at(index)) {
+            this->filter.at(index) = true;
+        }
+    }
     return index;
 }
 
@@ -61,10 +69,12 @@ void BloomFilter::dealWithLine(std::string line) {
         useHash(str_vector.back());
     } else if (str_vector.at(0) == "2") {
         // Check if the URL is in the blacklist or not
-        bool flag = this->filter.at(checkHash(str_vector.back()));
+        std::vector<size_t> indexes = checkHash(str_vector.back());
+        bool flag = true;
+        for (size_t id : indexes) {
+            flag = flag & this->filter.at(id);
+        }
         if (true == flag) {
-            // Need to add here the check if true positive or false positive
-            // aka "true true" or "true false"
             std::cout << "true";
             urlInBlackList(str_vector.back());
         } else {
