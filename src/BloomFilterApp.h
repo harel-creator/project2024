@@ -8,30 +8,34 @@
 #include "HelpFunctions.h"
 #include <istream>
 
-// The class for the url hashing function that hashes once: the 1-hash function. 
+// The class that sets the filter up, and starts running it. 
 class BloomFilterApp {
     private:
-        BloomFilter* bloomFilter;       //pointer to Bloomfilter object
+        BloomFilter* bloomFilter;       //Pointer to the Bloomfilter the app uses which is saved in the heap.
     public:
 
-        // Default constructor of the app, shoud be used from main.
+        // Default constructor of the app, should be used from main.
         BloomFilterApp();
 
-        /**
-         * ensures that the input is proper for building bloomfilter.
-         * @param str The input of the user for set up
-         * @return Is the in put sutble to init bloomfilter.
-         */
-        static bool setUpInPutCheck(std::string user_input);
+        // Destructor.
+        ~BloomFilterApp();
 
         /**
-         * bilds the bloomfilter after getting proper user input.
-         * until get suteble input preform endless while loop.
+         * Ensures that the input string for  building the bloomfilter is proper.
+         * @param userInput The settings of the bloom filter:
+           (First word- the size of the filter, The rest of the words- the hash functions to be used)
+         * @return true IFF the received string is a proper input to build a bloom filter with.
+         */
+        static bool isSetupInputProper(std::string userInput);
+
+        /**
+         * Builds the bloomfilter after getting proper user input.
+           (until it gets a suitable input, preforms endless loop)
          */
         void setUp();
 
         /**
-         * start infinte loop that deal with commands and requests of the user.
+         * Starts the infinite loop that deals with commands and requests of the user.
          */
         void run();
         

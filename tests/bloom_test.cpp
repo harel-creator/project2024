@@ -175,25 +175,25 @@ TEST(AlmostFinalTEST, finalOne){
 }
 //
 TEST(SetUpTests, notNumberSize){
-    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("a 1"), false);
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("a 1"), false);
 }
 //
 TEST(SetUpTests, notNumberHash){
-    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("8 a"), false);
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 a"), false);
 }
 //
 TEST(SetUpTests, zeroSize){
-    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("0 1"), false);
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("0 1"), false);
 }
 //
 TEST(SetUpTests, zeroHash){
-    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("8 0"), false);
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 0"), false);
 }
 TEST(SetUpTests, negSize){
-    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("-1 1"), false);
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("-1 1"), false);
 }
 TEST(SetUpTests, negHash){
-    EXPECT_EQ(BloomFilterApp::setUpInPutCheck("8 -1"), false);
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 -1"), false);
 }
 
 //
