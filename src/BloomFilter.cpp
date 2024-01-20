@@ -129,13 +129,8 @@ void BloomFilter::dealWithLine(std::string line) {
             return;
         }
 
-        std::cout << "true";
-
-        // Now we need to check if its a false positive or not:
-        if (isURLInBlacklist(url))
-            std::cout << " true" << std::endl;
-        else
-            std::cout << " false" << std::endl;
+        std::cout << "true ";
+        std::cout << std::boolalpha << isURLInBlacklist(url) << std::noboolalpha << std::endl;
     }
 }
 
