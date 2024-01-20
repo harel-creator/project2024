@@ -10,6 +10,9 @@
 // A class that contains the logic of the Bloom Filter.
 class BloomFilter {
 private:
+    static const std::string BLACKLIST_URL;
+    static const std::string IS_URL_BLACKLISTED;
+    
     const int DEFAULT_FILTER_SIZE = 8;
 
     int filterSize;                        // The size of the filter.

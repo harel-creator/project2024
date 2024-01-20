@@ -3,6 +3,9 @@
 #include "BloomFilter.h"
 #include "HelpFunctions.h"
 
+const std::string BloomFilter::BLACKLIST_URL = "1";
+const std::string BloomFilter::IS_URL_BLACKLISTED = "2";
+
 BloomFilter::BloomFilter() {
     this->filterSize = DEFAULT_FILTER_SIZE;
 
@@ -113,11 +116,11 @@ void BloomFilter::dealWithLine(std::string line) {
 
     std::string operation = tokens.at(0);
     std::string url = tokens.at(1);
-    if (operation == "1") {
+    if (operation == BloomFilter::BLACKLIST_URL) {
         // Add  url to the blacklist:
         addToBlacklist(url);
 
-    } else if (operation == "2") {
+    } else if (operation == BloomFilter::IS_URL_BLACKLISTED) {
         bool isSuspicous = isURLSuspicous(url);
 
         if (!isSuspicous) {
