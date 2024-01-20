@@ -66,7 +66,7 @@ public:
     void dealWithLine(std::string line);
 
     /**
-     * @Get the value at a specific index in the filter
+     * @Get the value at a specific index in the filter.
      * @param index The index to be checked
      * @return The value at the specified index in the filter
      */
