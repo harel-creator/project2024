@@ -10,10 +10,9 @@
 
 size_t NumHashFunc::hash(std::string url) {
     std::hash<std::string> myStringHash;
-    std::hash<size_t> myNumHash;
     size_t outPut = myStringHash(url);
     for (int i = 1; i < this->hashSize; ++i) {
-        outPut = myNumHash(outPut);
+        outPut = myStringHash(std::to_string(outPut));
     }
     return outPut % *(this->size);
 }
