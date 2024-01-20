@@ -28,7 +28,8 @@ bool BloomFilterApp::isSetupInputProper(std::string userInput) {
 
             // Check that the hash functions are proper:
             for (int i = 1; i < str_vector.size(); ++i) {
-                if (std::stoi(str_vector.at(i)) <= 0)
+                int functionID = std::stoi(str_vector.at(i));
+                if (functionID <= 0 || functionID > HashFunc::NUM_OF_UNIQUE_FUNCTIONS)
                     return false;
             }
 
@@ -36,24 +37,25 @@ bool BloomFilterApp::isSetupInputProper(std::string userInput) {
         } catch(...) {
             return false;
         }
-
 }
+
 void BloomFilterApp::setUp() {
-    std::string user_input = "";
-    while (!BloomFilterApp::isSetupInputProper(user_input)) {
-        std::getline(std::cin, user_input);
+    std::string userInput = "";
+    while (!BloomFilterApp::isSetupInputProper(userInput)) {
+        std::getline(std::cin, userInput);
     }
     
-    this->bloomFilter = new BloomFilter(user_input);
+    this->bloomFilter = new BloomFilter(userInput);
 }
+
 void BloomFilterApp::run() {
-    std::string user_input;
+    std::string userInput;
     while (true) {
-        std::getline(std::cin, user_input);
-        if (user_input == "") {
+        std::getline(std::cin, userInput);
+        if (userInput == "") {
             continue;  // Skip empty lines
         }
 
-        this->bloomFilter->dealWithLine(user_input);
+        this->bloomFilter->dealWithLine(userInput);
     }
 }

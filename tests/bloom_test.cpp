@@ -145,28 +145,6 @@ TEST(AlmostFinalTEST, finalOne){
     std::string output4 = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output4, "true false\n");
 }
-//
-TEST(SetUpTests, notNumberSize){
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("a 1"), false);
-}
-//
-TEST(SetUpTests, notNumberHash){
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 a"), false);
-}
-//
-TEST(SetUpTests, zeroSize){
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("0 1"), false);
-}
-//
-TEST(SetUpTests, zeroHash){
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 0"), false);
-}
-TEST(SetUpTests, negSize){
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("-1 1"), false);
-}
-TEST(SetUpTests, negHash){
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 -1"), false);
-}
 
 //
 TEST(FilterTests, addtionToListIfSameHash){
@@ -303,6 +281,39 @@ TEST(EdgeCases, dealWithLineEdgeCases) {
     bl.dealWithLine("1 1 1");
     output = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output, "");
-
-    
 }
+
+//Testing isSetupInputProper:
+TEST(BloomFilterAppTests, isSetupInputProperTest) {
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 1"), true);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("80 2"), true);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("800 1 2"), true);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("800 2 1"), true);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 1 1"), true); // = 8 1
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 1 2 1"), true); // = 8 1 2
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 1 2 1 2 2 1 1 2"), true); // = 8 1 2
+
+    // Edge cases:
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("a 1"), false);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 a"), false);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("0 1"), false);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 0"), false);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("-1 1"), false);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 -1"), false);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 3"), false);
+
+    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 1 5"), false);
+}
+
