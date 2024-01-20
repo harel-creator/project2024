@@ -66,14 +66,14 @@ public:
     void dealWithLine(std::string line);
 
     /**
-     * @Get the value at a specific index in the filter
-     * @param index The index to be checked
-     * @return The value at the specified index in the filter
+     * Get the value at a specific index in the filter.
+     * @param index The index to be checked.
+     * @return The value at the specified index in the filter.
      */
     bool getFilterIndex(size_t index) const;
 
     /**
-     * @return the size of the filter (how many bits we keep)
+     * @return the size of the filter (how many bits we keep).
     */
     int getFilterSize();
 };
