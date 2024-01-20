@@ -29,8 +29,9 @@ BloomFilter::BloomFilter(std::string str) {
 
 BloomFilter::~BloomFilter() {
     for (HashFunc* hashItem : this->hashF) {
-        delete hashItem;
-        }
+        if (hashItem != nullptr)
+            delete hashItem;
+    }
     }
 
 std::vector<size_t> BloomFilter::checkHash(std::string str) {
@@ -94,9 +95,9 @@ void BloomFilter::urlInBlackList(std::string url) const {
     std::cout << " false" << std::endl;
 }
 
-bool BloomFilter::getFilterIndex(int index) const {
+bool BloomFilter::getFilterIndex(size_t index) const {
     return this->filter.at(index);
 }
-size_t BloomFilter::getFilterSize(){
+int BloomFilter::getFilterSize(){
     return this->filterSize;
 }

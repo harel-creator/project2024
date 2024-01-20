@@ -16,9 +16,10 @@ enable_testing()
 
 set(SOURCE_FILES
 src/BloomFilter.cpp
+src/BloomFilterApp.cpp
 src/HashFunc.cpp
 src/HelpFunctions.cpp
-src/OneHashFunc.cpp
+src/NumHashFunc.cpp
 )
 
 set(TEST_FILES

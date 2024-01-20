@@ -8,15 +8,15 @@
 class HashFunc
 {
     protected:
-        // The range of values of the hash function: 0, ... , size-1.
-        size_t *size;
+        // The range of values of the hash function: 0, ... , range-1.
+        int *range;
 
     public:
         /**
          * Constructor that creates a hash function with a specific output range.
-         * @param size the size of the outpu range 0, ... , size-1.
+         * @param range the range of the outpu range 0, ... , range-1.
          */
-        HashFunc(size_t size);
+        HashFunc(int range);
 
         // Destructor.
         ~HashFunc();

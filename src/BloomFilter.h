@@ -10,11 +10,11 @@
 // A class that contains the logic of the Bloom Filter.
 class BloomFilter {
 private:
-    const size_t DEFAULT_FILTER_SIZE = 8;
+    const int DEFAULT_FILTER_SIZE = 8;
     std::vector<HashFunc*> hashF;  // Pointer to list of hash function objects
     std::vector<bool> filter;            // Bit array representing the filter
     std::vector<std::string> blackList;  // List of blacklisted URLs
-    size_t filterSize;                   // The size of the filter
+    int filterSize;                   // The size of the filter
 
 public:
     // Default Constructor for BloomFilter
@@ -62,12 +62,12 @@ public:
      * @param index The index to be checked
      * @return The value at the specified index in the filter
      */
-    bool getFilterIndex(int index) const;
+    bool getFilterIndex(size_t index) const;
 
     /**
      * @return the size of the filter (how many bits we keep)
     */
-    size_t getFilterSize();
+    int getFilterSize();
 };
 
 #endif

@@ -1,18 +1,20 @@
 #include "NumHashFunc.h"
 
+const std::hash<std::string> NumHashFunc::hasher{};
+
  NumHashFunc::NumHashFunc() : HashFunc(8) {
-     this->hashSize = 1;
+     this->timesToHash = 1;
 }
 
- NumHashFunc::NumHashFunc(size_t size, size_t hashSize) : HashFunc(size){
-     this->hashSize = hashSize;
+ NumHashFunc::NumHashFunc(size_t range, size_t timesToHash) : HashFunc(range){
+     this->timesToHash = timesToHash;
 }
 
 size_t NumHashFunc::hash(std::string url) {
-    std::hash<std::string> myStringHash;
-    size_t outPut = myStringHash(url);
-    for (int i = 1; i < this->hashSize; ++i) {
-        outPut = myStringHash(std::to_string(outPut));
+    size_t output = hasher(url);
+    for (int i = 2; i <= this->timesToHash; ++i) {
+        output = hasher(std::to_string(output));
     }
-    return outPut % *(this->size);
+    
+    return output % *(this->range);
 }
