@@ -11,6 +11,8 @@
 #include "../src/BloomFilterApp.cpp"
 #include "../src/VectorBlacklist.h"
 #include "../src/VectorBlacklist.cpp"
+#include "../src/SetupParser.h"
+#include "../src/SetupParser.cpp"
 
 
 // Testing the basic hash function:
@@ -30,7 +32,8 @@ TEST(FilterTeset,ConstarctorTest){
     }
 
     // Test the constructor that requires an array size:
-    BloomFilter bl1("128 1");
+    SetupParser sp;
+    BloomFilter bl1(sp.ParseSetup("128 1").first, sp.ParseSetup("128 1").second);
     for (int i =0; i < bl1.getFilterSize(); i++){
         EXPECT_EQ(bl1.getFilterIndex(i), false);
     }
@@ -169,7 +172,8 @@ TEST(FilterTests, addtionToListIfSameHash){
 
 //Example 1 from the exercise:
 TEST(ExampleTests, ExampleTest1) {
-    BloomFilter bl("8 1 2");
+    SetupParser sp;
+    BloomFilter bl(sp.ParseSetup("8 1 2").first, sp.ParseSetup("8 1 2").second);
 
     testing::internal::CaptureStdout();
     bl.dealWithLine("2 www.example.com0");
@@ -204,7 +208,8 @@ TEST(ExampleTests, ExampleTest1) {
 
 //Example 2 from the exercise:
 TEST(ExampleTests, ExampleTest2) {
-    BloomFilter bl("8 1");
+    SetupParser sp;
+    BloomFilter bl(sp.ParseSetup("8 1").first, sp.ParseSetup("8 1").second);
 
     testing::internal::CaptureStdout();
     bl.dealWithLine("1 www.example.com0");
@@ -284,36 +289,54 @@ TEST(EdgeCases, dealWithLineEdgeCases) {
 }
 
 //Testing isSetupInputProper:
-TEST(BloomFilterAppTests, isSetupInputProperTest) {
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 1"), true);
+TEST(SetupParserTests, SetupParserTests) {
+    SetupParser sp1;
+    EXPECT_NO_THROW(sp1.ParseSetup("8 1"));
 
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("80 2"), true);
+    SetupParser sp2;
+    EXPECT_NO_THROW(sp2.ParseSetup("8 1"));
 
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("800 1 2"), true);
+    SetupParser sp3;
+    EXPECT_NO_THROW(sp3.ParseSetup("80 2"));
+    
+    SetupParser sp4;
+    EXPECT_NO_THROW(sp4.ParseSetup("800 1 2"));
 
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("800 2 1"), true);
+    SetupParser sp5;
+    EXPECT_NO_THROW(sp5.ParseSetup("800 2 1"));
 
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 1 1"), true); // = 8 1
+    SetupParser sp6;
+    EXPECT_NO_THROW(sp6.ParseSetup("8 1 1"));
 
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 1 2 1"), true); // = 8 1 2
+    SetupParser sp7;
+    EXPECT_NO_THROW(sp7.ParseSetup("8 1 2 1"));
 
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 1 2 1 2 2 1 1 2"), true); // = 8 1 2
+    SetupParser sp8;
+    EXPECT_NO_THROW(sp8.ParseSetup("8 1 2 1 2 2 1 1 2"));
 
     // Edge cases:
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("a 1"), false);
+    SetupParser sp9;
+    EXPECT_THROW(sp9.ParseSetup("a 1"), std::runtime_error);
+    
+    SetupParser sp10;
+    EXPECT_THROW(sp10.ParseSetup("8 a"), std::runtime_error);
+       
+    SetupParser sp11;
+    EXPECT_THROW(sp11.ParseSetup("0 1"), std::runtime_error);
 
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 a"), false);
+    SetupParser sp12;
+    EXPECT_THROW(sp12.ParseSetup("8 0"), std::runtime_error);
 
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("0 1"), false);
+    SetupParser sp13;
+    EXPECT_THROW(sp13.ParseSetup("-1 1"), std::runtime_error);
 
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 0"), false);
+    SetupParser sp14;
+    EXPECT_THROW(sp14.ParseSetup("8 -1"), std::runtime_error);
 
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("-1 1"), false);
+    SetupParser sp15;
+    EXPECT_THROW(sp15.ParseSetup("8 3"), std::runtime_error);
 
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 -1"), false);
-
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 3"), false);
-
-    EXPECT_EQ(BloomFilterApp::isSetupInputProper("8 1 5"), false);
+    SetupParser sp16;
+    EXPECT_THROW(sp16.ParseSetup("8 1 5"), std::runtime_error);
 }
 

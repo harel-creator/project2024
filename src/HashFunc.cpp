@@ -8,3 +8,7 @@ HashFunc::HashFunc(int range) {
 HashFunc::~HashFunc() {
     delete this->range;
 }
+
+void HashFunc::setRange(int newRange) {
+    *(this->range) = newRange;
+}

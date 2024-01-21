@@ -30,6 +30,11 @@ public:
      * @return the hashed value of the given url.
      */
     virtual std::size_t hash(std::string url) = 0;
+
+    /**
+     * Sets the range of the hash function to a new value.
+    */
+    void setRange(int newRange);
 };
 
 #endif

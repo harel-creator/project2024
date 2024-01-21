@@ -19,20 +19,14 @@ BloomFilter::BloomFilter() {
     this->blackList = new VectorBlacklist;
 }
 
-BloomFilter::BloomFilter(std::string str) {
-    // We first split the input string into words:
-    std::vector<std::string> strVector = split(str);
-
+BloomFilter::BloomFilter(int size, std::vector<HashFunc*> hashFunctions) {
     // From it we can easily find the size of the filter and create the rest of it:
-    this->filterSize = std::stoi(strVector.at(0));
+    this->filterSize = size;
 
     this->filter = {};
     this->filter.assign(this->filterSize, false);
 
-    this->hashFunctions = {};
-    for (int i = 1; i < strVector.size(); ++i) {
-        this->hashFunctions.push_back(new NumHashFunc(this->filterSize, std::stoi(strVector.at(i))));
-    }
+    this->hashFunctions = hashFunctions;
 
     // We can always change it to another type of blacklist if we need:
     this->blackList = new VectorBlacklist;
