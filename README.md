@@ -7,7 +7,7 @@
 ## How to compile it for yourself
 Use the following command in the project folder after downloading it:
 
-g++ -o ./build/ex1 ./src/main.cpp ./src/BloomFilter.cpp ./src/BloomFilterApp.cpp ./src/HashFunc.cpp ./src/HelpFunctions.cpp ./src/NumHashFunc.cpp ./src/VectorBlacklist.cpp
+g++ -o ./build/ex1 ./src/main.cpp ./src/BloomFilter.cpp ./src/BloomFilterApp.cpp ./src/HashFunc.cpp ./src/HelpFunctions.cpp ./src/NumHashFunc.cpp ./src/VectorBlacklist.cpp ./src/SetupParser.cpp
 
 * Note: you can change where the resulting executable is saved and the name it gets by changing ./build/ex1 to ./NEW_LOCATION/NEW_NAME
 
