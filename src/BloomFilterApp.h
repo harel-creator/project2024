@@ -17,17 +17,6 @@ class BloomFilterApp {
         // Default constructor of the app, should be used from main.
         BloomFilterApp();
 
-        // Destructor.
-        ~BloomFilterApp();
-
-        /**
-         * Ensures that the input string for  building the bloomfilter is proper.
-         * @param userInput The settings of the bloom filter:
-           (First word- the size of the filter, The rest of the words- the hash functions to be used)
-         * @return true IFF the received string is a proper input to build a bloom filter with.
-         */
-        static bool isSetupInputProper(std::string userInput);
-
         /**
          * Builds the bloomfilter after getting proper user input.
            (until it gets a suitable input, preforms endless loop)

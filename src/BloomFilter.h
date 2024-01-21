@@ -31,7 +31,7 @@ public:
      * @param str A proper string parameter used for configuration:
        (first word- the filter size, the following words- which hashing functions to use)
      */
-    BloomFilter(std::string str);
+    BloomFilter(int size, std::vector<HashFunc*> hashFunctions);
 
     // Destructor
     ~BloomFilter();
