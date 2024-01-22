@@ -33,14 +33,13 @@ After downloading and compiling with the command above, enter ./build/ex1 to sta
 
 In order to complete the setup part of the application, you will need to enter 2 things:
 1. The size of the bloom filter- larger size means the filter will have to check its blacklist less often (which is better)
-2. Which hashing functions to use (we currently support 2 types):
-   1. 1hash function- hashes the input url once
-   2. 2hash function- hashes the input url once, and hashes the result.
+2. Which hashing functions to use (we currently support only natural number hash types):
+    nhash function- hashes the input url once, and hashes the result the nubmber of times needed to rich n hashes.
 
 In the same line enter both a **size and the functions to use** (no extra characters like ',' between each word).
-If you made a mistake, like choosing a negative size or trying to use a different function than 1 or 2, nothing will happen.
+If you made a mistake, like choosing a negative size or trying to use a different function than natural number, nothing will happen.
 The program will wait for you to enter a line again, which will hopefully be proper.
-For the functions just type their type (1 or 2). Using the same function multiple times is meaningless.
+For the functions just type their type (1, 2, 3 and so on). Using the same function multiple times is meaningless.
 
 
 <ins>After setup is done: </ins>
