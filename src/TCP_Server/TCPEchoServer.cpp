@@ -6,13 +6,18 @@
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
+#include <vector>
+#include "BloomFilter.h"
+#include "NumHashFunc.h"
+
+
 using namespace std;
 
 #define SERVER_PORT 5555 //Obviously the port of the server
 #define QUEUE_LENGTH 5 //The maximum length of the queue of pending connections.
 // (in other words, we can have QUEUE_LENGTH incoming connection request from different clients, and still remember all of them and handle them later once we can. if we have more than 5 of those, we might not remember to come back to some of the extra)
 #define BUFFER_SIZE 4096
-
+BloomFilter *bloomFilter;
 // A function that handles communicating with the client in another thread, after it is accepted.
 void *handle_client(void *arg) {
     // we must use void* here since it is automatically called from the function that creates new threads.
@@ -40,8 +45,7 @@ void *handle_client(void *arg) {
         } else { // We got valid data from the client:
             // This is currently an echo server, so we just printed what we got from the client. 
             // Later we can talk to the bloom filter according to the reqst from the user.
-            printf("Received data from client: %s\n", buffer);
-
+            bloomFilter->dealWithLine(buffer);
             // Echo back to the client:
             int sent_bytes = send(client_sock, buffer, read_bytes, 0);
             if (sent_bytes < 0) {
@@ -63,6 +67,9 @@ int main() {
     if (sock < 0) { 
         perror("error creating socket");
     }
+    std::vector<HashFunc*> hashFuncs{new NumHashFunc(256,1),new NumHashFunc(256,2),new NumHashFunc(256,3)};
+    bloomFilter = new BloomFilter(256,  hashFuncs);
+
 
     struct sockaddr_in sin;
     memset(&sin, 0, sizeof(sin)); // make every field of sin a zero.
