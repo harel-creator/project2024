@@ -63,7 +63,7 @@ public:
      * @param line The input line to be processed
      * @note probably better to put it in a different class later.
      */
-    void dealWithLine(std::string line);
+    std::string dealWithLine(std::string line);
 
     /**
      * @Get the value at a specific index in the filter.
