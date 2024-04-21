@@ -65,7 +65,6 @@ void *handle_client(void *arg) {
                     while (iss >> word) {
                         // Add each url to the blacklist:
                         serverBloomFilter->dealWithLine("1 " + word);
-                        std::cout << word << std::endl;
                     }
 
                     std::cout << "The bloom filter is initialized at size " << setupInfo.first << " with " << 
@@ -77,7 +76,6 @@ void *handle_client(void *arg) {
                     continue; // we allow this client to try again
                 }
             } else {
-                cout << input << endl;
                 string answer = serverBloomFilter->dealWithLine("2 " + input);
                 string clientResult = (answer == "true") ? "The link is blacklisted" : "The link is not blacklisted";
 
