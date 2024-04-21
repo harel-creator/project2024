@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <sys/socket.h>
 #include <stdio.h>
 #include <netinet/in.h>
@@ -7,6 +8,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <vector>
+
 #include "../BloomFilter.h"
 #include "../NumHashFunc.h"
 #include "../SetupParser.h"
@@ -20,17 +22,13 @@ using namespace std;
 
 #define BUFFER_SIZE 4096
 
-BloomFilter *serverBloomFilter;
+BloomFilter *serverBloomFilter = nullptr;
 
 // A function that handles communicating with the client in another thread, after it is accepted.
 void *handle_client(void *arg) {
     // we must use void* here since it is automatically called from the function that creates new threads.
 
     int client_sock = *((int *)arg);
-
-    // Note to Ariel:
-    // I didn't really understand if we are supposed to create a unique bloom filter for each accepted request (if that is the case, it should happen right here!)
-    // Or if we have 1 bloom filter for this entire tcp server. We need to ask someone that did it once it is relevant.
 
     // Continue with the communication until the client is done:
     while (1) {
@@ -42,22 +40,52 @@ void *handle_client(void *arg) {
 
         } else if (read_bytes < 0) { //Check if there was an error during the communication:
             // If there was a problem, we close the client socket, and kill this thread:
-            perror("error receiving from client");
             close(client_sock);
             pthread_exit(NULL); // (kills the current thread)
 
         } else { // We got valid data from the client:
-            // This is currently an echo server, so we just printed what we got from the client. 
-            // Later we can talk to the bloom filter according to the reqst from the user.
-            string answer = serverBloomFilter->dealWithLine("2 " + string(buffer, BUFFER_SIZE));
-            string clientResult = (answer == "true true") ? "The link is blacklisted" : "The link is not blacklisted";
+            buffer[read_bytes] = '\0';
+            string input = string(buffer, read_bytes);
 
-            // Echo back to the client:
-            int sent_bytes = send(client_sock, clientResult.c_str(), clientResult.length() + 1, 0); //we need the +1 for the null terminator
-            if (sent_bytes < 0) {
-                perror("error sending to client");
-                close(client_sock);
-                pthread_exit(NULL);
+            if (serverBloomFilter == nullptr) { // This is the setup of the filter:
+                // We expect the format: size functions : blacklisted urls to initialize with. 
+
+                int splitIndex = input.find_first_of(":");
+                string bloomfilterInitializer = input.substr(0, splitIndex-1);
+                string blacklistedURLs = input.substr(splitIndex+2);
+                SetupParser sp;
+                std::pair<int, std::vector<HashFunc*>> setupInfo;
+                try {
+                    setupInfo = sp.ParseSetup(bloomfilterInitializer);
+                    serverBloomFilter = new BloomFilter(setupInfo.first, setupInfo.second);
+
+                    // Now fill the blacklisted urls:
+                    std::istringstream iss(blacklistedURLs);
+                    std::string word;
+                    while (iss >> word) {
+                        // Add each url to the blacklist:
+                        serverBloomFilter->dealWithLine("1 " + word);
+                    }
+
+                    std::cout << "The bloom filter is initialized at size " << setupInfo.first << " with " << 
+                                    setupInfo.second.size() << " different hash functions." << std::endl;
+                } catch (...) {
+                    perror("error initializing the bloom filter");
+                    delete(serverBloomFilter);
+                    serverBloomFilter = nullptr;
+                    continue; // we allow this client to try again
+                }
+            } else {
+                string answer = serverBloomFilter->dealWithLine("2 " + input);
+                string clientResult = (answer == "true") ? "The link is blacklisted" : "The link is not blacklisted";
+
+                // Respond back to the client:
+                int sent_bytes = send(client_sock, clientResult.c_str(), clientResult.length(), 0);
+                if (sent_bytes < 0) {
+                    perror("error sending to client");
+                    close(client_sock);
+                    pthread_exit(NULL);
+                }
             }
         }
     }
@@ -74,8 +102,6 @@ int main() {
         perror("error creating socket");
     }
 
-    // Create the bloom filter itself:
-
     struct sockaddr_in sin;
     memset(&sin, 0, sizeof(sin)); // make every field of sin a zero.
     sin.sin_family = AF_INET;
@@ -91,44 +117,8 @@ int main() {
     if (listen(sock, QUEUE_LENGTH) < 0) {
         perror("error listening to a socket");
     }
-    bool init = false;
-    while (1) {
-        char buffer[BUFFER_SIZE];
 
-        int read_bytes = recv(sock, buffer, sizeof(buffer), 0); //Recieve data from the client, and put it in the buffer.
-        if (read_bytes == 0) {
-            break; // Once the client sends an empty message, we understand it is done with its requests.
-
-        } else if (read_bytes < 0) { //Check if there was an error during the communication:
-            // If there was a problem, we close the client socket, and kill this thread:
-            perror("error receiving from client");
-            close(sock);
-
-        } else { // We got valid data from the client:
-            // This is currently an echo server, so we just printed what we got from the client.
-            // Later we can talk to the bloom filter according to the reqst from the user.
-            if(init) {
-                serverBloomFilter->dealWithLine("1 " + string(buffer, BUFFER_SIZE));
-            } else {
-                std::string userInput = "";
-                SetupParser sp;
-                bool setupDone = false;
-                std::pair<int, std::vector<HashFunc*>> setupInfo;
-                while (!setupDone) {
-                    try {
-                        userInput = string(buffer, BUFFER_SIZE);
-                        setupInfo = sp.ParseSetup(userInput);
-
-                        // If we got here, that means ParseSetup didn't throw an error
-                        // So it received proper input:
-                        setupDone = true;
-                    } catch (...) {}
-                }
-                serverBloomFilter = new BloomFilter(setupInfo.first, setupInfo.second);
-                init = true;
-            }
-        }
-    }
+    std::cout << "The bloom filter server is now open at port " << SERVER_PORT << std::endl;
 
     // The server continuously waits for a client to connect to it:
     while(1) {
@@ -152,7 +142,7 @@ int main() {
             close(*client_sock);
             free(client_sock);
 
-            continue;;
+            continue;
         }
 
         // From what I understand, we use this so that once the new thread finishes, it's resources will be cleaned for us by the system:
