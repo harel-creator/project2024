@@ -9,6 +9,7 @@
 #include <vector>
 #include "../BloomFilter.h"
 #include "../NumHashFunc.h"
+#include "../SetupParser.h"
 
 
 using namespace std;
@@ -74,9 +75,6 @@ int main() {
     }
 
     // Create the bloom filter itself:
-    std::vector<HashFunc*> hashFuncs{new NumHashFunc(256,1),new NumHashFunc(256,2),new NumHashFunc(256,3)};
-    serverBloomFilter = new BloomFilter(256,  hashFuncs);
-
 
     struct sockaddr_in sin;
     memset(&sin, 0, sizeof(sin)); // make every field of sin a zero.
@@ -92,6 +90,44 @@ int main() {
     // Change the socket to listen mode:
     if (listen(sock, QUEUE_LENGTH) < 0) {
         perror("error listening to a socket");
+    }
+    bool init = false;
+    while (1) {
+        char buffer[BUFFER_SIZE];
+
+        int read_bytes = recv(sock, buffer, sizeof(buffer), 0); //Recieve data from the client, and put it in the buffer.
+        if (read_bytes == 0) {
+            break; // Once the client sends an empty message, we understand it is done with its requests.
+
+        } else if (read_bytes < 0) { //Check if there was an error during the communication:
+            // If there was a problem, we close the client socket, and kill this thread:
+            perror("error receiving from client");
+            close(sock);
+
+        } else { // We got valid data from the client:
+            // This is currently an echo server, so we just printed what we got from the client.
+            // Later we can talk to the bloom filter according to the reqst from the user.
+            if(init) {
+                serverBloomFilter->dealWithLine("1 " + string(buffer, BUFFER_SIZE));
+            } else {
+                std::string userInput = "";
+                SetupParser sp;
+                bool setupDone = false;
+                std::pair<int, std::vector<HashFunc*>> setupInfo;
+                while (!setupDone) {
+                    try {
+                        userInput = string(buffer, BUFFER_SIZE);
+                        setupInfo = sp.ParseSetup(userInput);
+
+                        // If we got here, that means ParseSetup didn't throw an error
+                        // So it received proper input:
+                        setupDone = true;
+                    } catch (...) {}
+                }
+                serverBloomFilter = new BloomFilter(setupInfo.first, setupInfo.second);
+                init = true;
+            }
+        }
     }
 
     // The server continuously waits for a client to connect to it:
