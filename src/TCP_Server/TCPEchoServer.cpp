@@ -41,18 +41,18 @@ void *handle_client(void *arg) {
 
         } else if (read_bytes < 0) { //Check if there was an error during the communication:
             // If there was a problem, we close the client socket, and kill this thread:
-            perror("error receiving from client");
             close(client_sock);
             pthread_exit(NULL); // (kills the current thread)
 
         } else { // We got valid data from the client:
             // This is currently an echo server, so we just printed what we got from the client. 
             // Later we can talk to the bloom filter according to the reqst from the user.
-            string answer = serverBloomFilter->dealWithLine("2 " + string(buffer, BUFFER_SIZE));
-            string clientResult = (answer == "true true") ? "The link is blacklisted" : "The link is not blacklisted";
+            buffer[read_bytes] = '\0';
+            string answer = serverBloomFilter->dealWithLine("2 " + string(buffer, read_bytes));
+            string clientResult = (answer == "true") ? "The link is blacklisted" : "The link is not blacklisted";
 
             // Echo back to the client:
-            int sent_bytes = send(client_sock, clientResult.c_str(), clientResult.length() + 1, 0); //we need the +1 for the null terminator
+            int sent_bytes = send(client_sock, clientResult.c_str(), clientResult.length(), 0);
             if (sent_bytes < 0) {
                 perror("error sending to client");
                 close(client_sock);
@@ -76,7 +76,7 @@ int main() {
     // Create the bloom filter itself:
     std::vector<HashFunc*> hashFuncs{new NumHashFunc(256,1),new NumHashFunc(256,2),new NumHashFunc(256,3)};
     serverBloomFilter = new BloomFilter(256,  hashFuncs);
-
+    serverBloomFilter->dealWithLine("1 https://test.com"); //for testing, delete later!
 
     struct sockaddr_in sin;
     memset(&sin, 0, sizeof(sin)); // make every field of sin a zero.
