@@ -142,7 +142,7 @@ int main() {
             close(*client_sock);
             free(client_sock);
 
-            continue;;
+            continue;
         }
 
         // From what I understand, we use this so that once the new thread finishes, it's resources will be cleaned for us by the system:
