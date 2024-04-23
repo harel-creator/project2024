@@ -1,0 +1,4 @@
+C:/Users/User/Desktop/BarIlan/C.S/web/project2024/cmake-build-debug/CMakeFiles/BloomFilterTests.dir
+C:/Users/User/Desktop/BarIlan/C.S/web/project2024/cmake-build-debug/CMakeFiles/test.dir
+C:/Users/User/Desktop/BarIlan/C.S/web/project2024/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/User/Desktop/BarIlan/C.S/web/project2024/cmake-build-debug/CMakeFiles/rebuild_cache.dir

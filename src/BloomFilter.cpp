@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #include "BloomFilter.h"
 #include "HelpFunctions.h"
@@ -73,30 +74,29 @@ bool BloomFilter::isURLSuspicous(std::string url) {
     return true;
 }
 
-void BloomFilter::dealWithLine(std::string line) {
+std::string BloomFilter::dealWithLine(std::string line) {
     std::vector<std::string> tokens = split(line);
     // All proper lines contain exactly 2 tokens, the operation and a url:
     if (tokens.size() != 2) 
-        return;
+        return "syntax fail";
 
     std::string operation = tokens.at(0);
     std::string url = tokens.at(1);
     if (operation == BloomFilter::BLACKLIST_URL) {
         // Add  url to the blacklist:
         addToBlacklist(url);
+        return "add ok";
 
     } else if (operation == BloomFilter::IS_URL_BLACKLISTED) {
         bool isSuspicous = isURLSuspicous(url);
 
         if (!isSuspicous) {
             // The url is't suspicous, we stop here:
-            std::cout << "false" << std::endl;
-            return;
+            return "false";
         }
-
-        std::cout << "true ";
-        std::cout << std::boolalpha << this->blackList->isURLBlacklisted(url) << std::noboolalpha << std::endl;
+        return this->blackList->isURLBlacklisted(url) ? "true" : "false";
     }
+    return "syntax fail";
 }
 
 bool BloomFilter::getFilterIndex(size_t index) const {
