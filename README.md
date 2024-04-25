@@ -1,4 +1,10 @@
 # Our Bloom Filter
+in order to compile the server (must be on a linux machine) enter: 
+
+g++ -o server ./TCP_Server/TCPEchoServer.cpp ./BloomFilter.cpp ./BloomFilterApp.cpp ./HashFunc.cpp ./HelpFunctions.cpp ./NumHashFunc.cpp ./VectorBlacklist.cpp ./SetupParser.cpp
+
+it will output a file named server that you can just run with ./server
+
 Welcome to our Bloom Filter repository!
 
 The first assignment of the course asked us to create a Bloom Filter, which is a probabilistic data structure, while working in TDD.
