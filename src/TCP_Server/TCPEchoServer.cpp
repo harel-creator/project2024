@@ -77,6 +77,7 @@ void *handle_client(void *arg) {
                 }
             } else {
                 string answer = serverBloomFilter->dealWithLine("2 " + input);
+                if (answer == "syntax fail") continue;
                 string clientResult = (answer == "true") ? "The link is blacklisted" : "The link is not blacklisted";
 
                 // Respond back to the client:
