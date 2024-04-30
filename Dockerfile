@@ -13,4 +13,6 @@ RUN g++ -o server ./TCP_Server/TCPEchoServer.cpp \
     ./VectorBlacklist.cpp \
     ./SetupParser.cpp
 
+EXPOSE 5555
+
 CMD ["./server"]
